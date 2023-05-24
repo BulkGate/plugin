@@ -1,7 +1,7 @@
 {
     "name": "bulkgate/plugin",
     "description": "Meta package for BulkGate plugins",
-    "type": "metapackage",
+    "type": "library",
     "autoload": {
         "classmap": ["src/"]
     },
