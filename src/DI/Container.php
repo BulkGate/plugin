@@ -184,7 +184,11 @@ class Container implements ArrayAccess
 				 */
 				$parameter_type = $type_reflection instanceof \ReflectionNamedType ? $type_reflection->getName() : null;
 
-				if ($parameter_type !== null && (class_exists($parameter_type) || interface_exists($parameter_type)))
+				if (isset($service['parameters'][$parameter->getName()]) && $service['parameters'][$parameter->getName()] instanceof $parameter_type)
+				{
+					$parameters[] = $service['parameters'][$parameter->getName()];
+				}
+				else if ($parameter_type !== null && (class_exists($parameter_type) || interface_exists($parameter_type)))
 				{
 					$parameters[] = $this->getByClass($parameter_type);
 				}
