@@ -26,7 +26,7 @@ class Container implements ArrayAccess
 	private array $services = [];
 
 	/**
-	 * @var array<class-string<object>, array{name: string, factory?: class-string<T>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool}>
+	 * @var array<class-string<object>, array{name: string, factory?: class-string<T>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool, factory_method?: callable(mixed ...$parameters):T|null}>
 	 */
 	private array $auto_wiring = [];
 
@@ -58,7 +58,7 @@ class Container implements ArrayAccess
 		foreach ($config as $name => $service) if (is_string($service) || is_array($service))
 		{
 			/**
-			 * @var class-string<T>|array{factory?: class-string<T>, parameters?: array<string, mixed>, wiring?: class-string<T>, auto_wiring?: bool} $service
+			 * @var class-string<T>|array{factory?: class-string<T>, parameters?: array<string, mixed>, wiring?: class-string<T>, auto_wiring?: bool, factory_method?: callable(mixed ...$parameters):T|null} $service
 			 */
 			$this[is_string($name) ? $name : uniqid('class-')] = $service;
 		}
@@ -159,7 +159,7 @@ class Container implements ArrayAccess
 		}
 
 		/**
-		 * @var array{factory: class-string<T>, parameters: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool}|null $service
+		 * @var array{factory: class-string<T>, parameters: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool, factory_method?: callable(mixed ...$parameters):T|null}|null $service
 		 */
 		$service = $this->services[$name] ?? null;
 
@@ -168,6 +168,9 @@ class Container implements ArrayAccess
 			throw new MissingServiceException("Service '$name' not found");
 		}
 
+		/**
+		 * @var class-string<T> $factory
+		 */
 		$factory = $service['factory'];
 
 		$parameters = [];
@@ -197,7 +200,7 @@ class Container implements ArrayAccess
 				{
 					$static_parameter = $service['parameters'][$parameter->getName()] ?? null;
 
-					if ($static_parameter === null)
+					if ($static_parameter === null && !isset($service['factory_method']))
 					{
 						$parameter_type ??= 'unknown';
 
@@ -218,12 +221,11 @@ class Container implements ArrayAccess
 
 
 	/**
-	 * @template TFactory of object
-	 * @param class-string<TFactory> $factory
+	 * @param class-string<T> $factory
 	 * @param string $name
-	 * @param callable|null $factory_method
-	 * @param ...$parameters
-	 * @return TFactory
+	 * @param callable(mixed ...$parameters):T|null $factory_method
+	 * @param mixed ...$parameters
+	 * @return T
 	 * @throws MissingParameterException
 	 */
 	private function createInstance(string $factory, string $name, ?callable $factory_method, ...$parameters): object
@@ -268,7 +270,7 @@ class Container implements ArrayAccess
 
 	/**
 	 * @param array-key $offset
-	 * @param class-string<T>|array{factory?: class-string<T>, parameters?: array<string, mixed>, wiring?: class-string<T>, auto_wiring?: bool} $value
+	 * @param class-string<T>|array{factory?: class-string<T>, parameters?: array<string, mixed>, wiring?: class-string<T>, auto_wiring?: bool, factory_method?: callable(mixed ...$parameters):T|null} $value
 	 * @throws AutoWiringException|InvalidStateException
 	 */
 	public function offsetSet($offset, $value): void
