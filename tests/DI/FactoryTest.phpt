@@ -21,13 +21,32 @@ class FactoryTest extends TestCase
 	{
 		$factory = new class () implements Factory
 		{
+			public static array $parameters = [];
+
 			public static function create(array $parameters = []): Container
+			{
+				return new Container();
+			}
+
+			public static function setup(callable $callback): void
+			{
+				self::$parameters = $callback();
+			}
+
+			public static function get(): Container
 			{
 				return new Container();
 			}
 		};
 
-		Assert::type(Container::class, $factory->create(['test' => 'test']));
+		$factory::setup(function (): array
+		{
+			return ['test' => 'test'];
+		});
+
+		Assert::same(['test' => 'test'], $factory::$parameters);
+
+		Assert::type(Container::class, $factory->get());
 	}
 }
 

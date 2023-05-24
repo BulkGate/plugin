@@ -10,8 +10,13 @@ namespace BulkGate\Plugin\DI;
 interface Factory
 {
 	/**
-	 * @param array<string, mixed> $parameters
+	 * @param callable(): array<string, mixed> $callback
+	 */
+	public static function setup(callable $callback): void;
+
+
+	/**
 	 * @return Container<object>
 	 */
-	public static function create(array $parameters = []): Container;
+	public static function get(): Container;
 }
