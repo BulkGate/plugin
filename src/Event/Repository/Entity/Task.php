@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\Event\Repository\Entity;
  */
 
 use BulkGate\Plugin\{Strict, Settings\Helpers, Structure\Entity};
-use function is_string;
+use function is_array, is_string, time;
 
 class Task implements Entity
 {
@@ -34,7 +34,7 @@ class Task implements Entity
 
 		$this->key = $parameters['key'] ?? '';
 		$this->value = is_array($value) ? $value : [];
-		$this->datetime = $parameters['datetime'] ?? time();
-		$this->order = $parameters['order'] ?? 0;
+		$this->datetime = isset($parameters['datetime']) ? (int) $parameters['datetime'] : time();
+		$this->order = isset($parameters['order']) ? (int) $parameters['order'] : 0;
 	}
 }

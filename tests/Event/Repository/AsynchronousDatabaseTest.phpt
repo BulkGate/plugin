@@ -31,8 +31,8 @@ class AsynchronousDatabaseTest extends TestCase
 
 		$db->shouldReceive('execute')->with('START TRANSACTION')->once()->ordered();
 		$db->shouldReceive('execute')->with("SELECT * FROM `bulkgate_module` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT 2 FOR UPDATE")->once()->andReturn([
-			['key' => 'task1', 'value' => '{"category": "test", "endpoint": "endpoint1", "variables": {"key": "value"}}'],
-			['key' => 'task2', 'value' => '{"category": "test", "endpoint": "endpoint2", "variables": {"key2": "value2"}}'],
+			['key' => 'task1', 'value' => '{"category": "test", "endpoint": "endpoint1", "variables": {"key": "value"}}', 'datetime' => '456', 'order' => '0'],
+			['key' => 'task2', 'value' => '{"category": "test", "endpoint": "endpoint2", "variables": {"key2": "value2"}}', 'datetime' => 456, 'order' => 0],
 		])->ordered();
 		$db->shouldReceive('escape')->with('task1')->once()->ordered()->andReturn('escaped_task1');
 		$db->shouldReceive('escape')->with('task2')->once()->ordered()->andReturn('escaped_task2');
