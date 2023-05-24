@@ -1,0 +1,6 @@
+vendor
+.idea
+composer.lock
+coverage.html
+tests/**/output/*.actual
+tests/**/output/*.expected
