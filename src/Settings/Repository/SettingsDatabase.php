@@ -27,9 +27,11 @@ class SettingsDatabase implements Settings
 
 		$result = $this->db->execute($this->db->prepare("SELECT * FROM `{$this->db->table('bulkgate_module')}` WHERE `scope` = %s AND `synchronize_flag` != %s ORDER BY `order`", $scope, 'delete'));
 
-		foreach ($result ?? [] as $key => $row)
+		foreach ($result ?? [] as $row)
 		{
-			$collection[$key] = new Entity\Setting($row);
+			$entity = new Entity\Setting($row);
+
+			$collection[$entity->key] = $entity;
 		}
 
 		return $collection;
