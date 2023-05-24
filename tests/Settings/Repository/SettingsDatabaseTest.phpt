@@ -28,8 +28,8 @@ class SettingsDatabaseTest extends TestCase
 			->andReturn($sql = 'SELECT * FROM `prefix_bulkgate_module` WHERE `scope` = \'main\' AND `synchronize_flag` != \'delete\' ORDER BY `order`');
 
 		$connection->shouldReceive('execute')->with($sql)->once()->andReturn([
-			'one' => ['scope' => 'main', 'key' => 'one', 'type' => 'string', 'value' => 'v1'],
-			'two' => ['scope' => 'main', 'key' => 'one', 'type' => 'array', 'value' => '{"value":"v2"}']
+			['scope' => 'main', 'key' => 'one', 'type' => 'string', 'value' => 'v1'],
+			['scope' => 'main', 'key' => 'two', 'type' => 'array', 'value' => '{"value":"v2"}']
 		]);
 
 		$list = $repository->load('main')->toArray();
@@ -46,7 +46,7 @@ class SettingsDatabaseTest extends TestCase
 
 		Assert::equal([
 			'scope' => 'main',
-			'key' => 'one',
+			'key' => 'two',
 			'type' => 'array',
 			'value' => ['value' => 'v2'],
 			'datetime' => Expect::type('int'),
