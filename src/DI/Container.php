@@ -71,7 +71,7 @@ class Container implements ArrayAccess
 	 * @param class-string<T>|null $wiring
 	 * @throws AutoWiringException|InvalidStateException
 	 */
-	public function add(string $factory, array $parameters = [], ?string $name = null, ?string $wiring = null, bool $auto_wiring = true): void
+	public function add(string $factory, array $parameters = [], ?string $name = null, ?string $wiring = null, bool $auto_wiring = true, ?callable $factory_method = null): void
 	{
 		try
 		{
@@ -84,6 +84,7 @@ class Container implements ArrayAccess
 				'parameters' => $parameters,
 				'reflection' => $reflection = new ReflectionClass($factory),
 				'instantiable' => $reflection->isInstantiable(),
+				'factory_method' => $factory_method
 			];
 
 			$this->setAutoWiring($factory, $name);
@@ -207,11 +208,40 @@ class Container implements ArrayAccess
 				}
 			}
 
-			return $this->instances[$name] = new $factory(...$parameters);
+			return $this->createInstance($factory, $name, $service['factory_method'] ?? null, ...$parameters);
 		}
 		catch (ReflectionException $e)
 		{
-			return $this->instances[$name] = new $factory;
+			return $this->createInstance($factory, $name, $service['factory_method'] ?? null);
+		}
+	}
+
+
+	/**
+	 * @template TFactory of object
+	 * @param class-string<TFactory> $factory
+	 * @param string $name
+	 * @param callable|null $factory_method
+	 * @param ...$parameters
+	 * @return TFactory
+	 * @throws MissingParameterException
+	 */
+	private function createInstance(string $factory, string $name, ?callable $factory_method, ...$parameters): object
+	{
+		if ($factory_method !== null)
+		{
+			$instance = $factory_method(...$parameters);
+
+			if (!$instance instanceof $factory)
+			{
+				throw new MissingParameterException("Factory method must return instance of '$factory'");
+			}
+
+			return $this->instances[$name] = $instance;
+		}
+		else
+		{
+			return $this->instances[$name] = new $factory(...$parameters);
 		}
 	}
 
@@ -249,7 +279,7 @@ class Container implements ArrayAccess
 		}
 		else if (is_array($value) && isset($value['factory']))
 		{
-			$this->add($value['factory'], $value['parameters'] ?? [], $offset, $value['wiring'] ?? null, $value['auto_wiring'] ?? true);
+			$this->add($value['factory'], $value['parameters'] ?? [], $offset, $value['wiring'] ?? null, $value['auto_wiring'] ?? true, $value['factory_method'] ?? null);
 		}
 		else
 		{
