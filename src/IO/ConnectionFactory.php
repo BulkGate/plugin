@@ -37,7 +37,7 @@ class ConnectionFactory
 			'application_url' => $this->application_url,
 			'application_product' => $this->application_product,
 			'application_language' => $this->settings->load('static:language') ?? 'en',
-		], $this->settings->load('static:application_token'));
+		], $this->settings->load('static:application_token') ?? '');
 
 		if ($jwt === null)
 		{
