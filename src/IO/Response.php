@@ -78,10 +78,6 @@ class Response
 
 				throw new InvalidResponseException($array['error'][$key]);
 			}
-			else
-			{
-				throw new InvalidResponseException('unknown_error');
-			}
 		}
 	}
 
