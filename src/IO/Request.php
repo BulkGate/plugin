@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\IO;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{JsonException, Strict, Utils\Compress, Utils\Json};
+use BulkGate\Plugin\{JsonException, Strict, Utils\Json};
 
 class Request
 {
