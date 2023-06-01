@@ -32,7 +32,8 @@ class ConnectionStream implements Connection
 			'method' => 'POST',
 			'header' => [
 				"Content-type: $request->content_type",
-				"Authorization: Bearer $this->jwt_token"
+				"Authorization: Bearer $this->jwt_token",
+                //"Cookie: XDEBUG_SESSION=10355" //debugging purpose only
 			],
 			'content' => $request->serialize(),
 			'ignore_errors' => true,

@@ -101,7 +101,7 @@ class SettingsDatabaseTest extends TestCase
 	{
 		$repository = new SettingsDatabase($connection = Mockery::mock(Connection::class));
 		$connection->shouldReceive('table')->with('bulkgate_module')->twice()->andReturn('prefix_bulkgate_module');
-		$connection->shouldReceive('execute')->with('CREATE TABLE IF NOT EXISTS `prefix_bulkgate_module` (`scope` varchar(50) NOT NULL DEFAULT \'main\',`key` varchar(50) NOT NULL,`type` varchar(50) NOT NULL DEFAULT \'string\',`value` longtext DEFAULT NULL,`datetime` int(11) NOT NULL DEFAULT unix_timestamp(current_timestamp()),`order` int(11) NOT NULL DEFAULT 0,`synchronize_flag` varchar(50) NOT NULL DEFAULT \'none\' COMMENT \'none/add/change/delete\',PRIMARY KEY (`scope`,`key`),KEY `synchronize_flag` (`synchronize_flag`),KEY `scope_synchronize_flag` (`scope`,`synchronize_flag`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')->once()->andReturnNull();
+		$connection->shouldReceive('execute')->with('CREATE TABLE IF NOT EXISTS `prefix_bulkgate_module` (`scope` varchar(50) NOT NULL DEFAULT \'main\',`key` varchar(50) NOT NULL,`type` varchar(50) NOT NULL DEFAULT \'string\',`value` longtext DEFAULT NULL,`datetime` int(11) NOT NULL,`order` int(11) NOT NULL DEFAULT 0,`synchronize_flag` varchar(50) NOT NULL DEFAULT \'none\' COMMENT \'none/add/change/delete\',PRIMARY KEY (`scope`,`key`),KEY `synchronize_flag` (`synchronize_flag`),KEY `scope_synchronize_flag` (`scope`,`synchronize_flag`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')->once()->andReturnNull();
 		$connection->shouldReceive('execute')->with('ALTER TABLE `prefix_bulkgate_module` ENGINE=InnoDB;')->once();
 
 		$repository->createTable();
