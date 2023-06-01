@@ -34,7 +34,7 @@ class ConnectionFactory
 	{
 		$application_token = $this->settings->load('static:application_token');
 
-        $jwt = Jwt::encode([
+		$jwt = Jwt::encode([
 			'application_id' => $this->settings->load('static:application_id'),
 			'application_url' => $this->application_url,
 			'application_product' => $this->application_product,
