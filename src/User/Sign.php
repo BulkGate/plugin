@@ -7,7 +7,15 @@ namespace BulkGate\Plugin\User;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{InvalidResponseException, IO\Connection, IO\Request, IO\Url, Settings\Settings, Strict, Utils\Jwt};
+use BulkGate\Plugin\{
+    Eshop\Configuration,
+    InvalidResponseException,
+    IO\Connection,
+    IO\Request,
+    IO\Url,
+    Settings\Settings,
+    Strict,
+    Utils\Jwt};
 use function array_merge;
 
 class Sign
@@ -20,12 +28,15 @@ class Sign
 
 	private Url $url;
 
+    private Configuration $eshop_configuration;
 
-	public function __construct(Settings $settings, Connection $connection, Url $url)
+
+	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration)
 	{
 		$this->settings = $settings;
 		$this->connection = $connection;
 		$this->url = $url;
+        $this->eshop_configuration = $configuration;
 	}
 
 
@@ -37,10 +48,11 @@ class Sign
 		return [
 			'token' => Jwt::encode([
 					'application_id' => $this->settings->load('static:application_id'),
+                    'application_url' => $this->eshop_configuration->url(),
 					// todo
 					'expire' => time() + 300
 				],
-				$this->settings->load('static:application_token')
+				$this->settings->load('static:application_token') ?? 'guest'
 			) ?? 'guest'
 		];
 	}
@@ -63,7 +75,7 @@ class Sign
 
 			if (!isset($login['application_id']) || !isset($login['application_token']))
 			{
-				return ['error' => 'unknown_error'];
+				return ['error' => ['unknown_error']]; //todo: pouzit balicek pro response (react)
 			}
 
 			$this->settings->install();
@@ -76,7 +88,7 @@ class Sign
 		}
 		catch (InvalidResponseException $e)
 		{
-			return ['error' => $e->getMessage()];
+			return ['error' => [$e->getMessage()]]; //todo: pouzit balicek pro response (react)
 		}
 	}
 
