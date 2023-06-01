@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\User\Test;
 
 use Mockery;
 use Tester\{Assert, Expect, TestCase};
-use BulkGate\Plugin\{InvalidResponseException, IO\Connection, IO\Request, IO\Response, IO\Url, Settings\Settings, User\Sign};
+use BulkGate\Plugin\{Eshop\ConfigurationDefault, InvalidResponseException, IO\Connection, IO\Request, IO\Response, IO\Url, Settings\Settings, User\Sign};
 use function json_encode;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -18,21 +18,19 @@ class SignTest extends TestCase
 {
 	public function testAuthenticate(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url());
+		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0'));
 
-		$settings->shouldReceive('load')->with('static:application_id')->andReturn(12345);
-		$settings->shouldReceive('load')->with('static:application_token')->andReturn('test_application_token');
+		$settings->shouldReceive('load')->with('static:application_token')->once()->andReturn('test_application_token');
+		$settings->shouldReceive('load')->with('static:application_id')->once()->andReturn(12345);
+		$settings->shouldReceive('load')->with('main:language')->once()->andReturn('cs');
 
-		$result = $sign->authenticate();
-
-		Assert::count(1, $result);
-		Assert::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~', $result['token']);
+		Assert::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~', $sign->authenticate());
 	}
 
 
 	public function testIn(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url());
+		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0'));
 		$settings->shouldReceive('install')->withNoArgs()->once();
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool
 		{
@@ -43,8 +41,9 @@ class SignTest extends TestCase
 			'application_id' => 12345,
 			'application_token' => 'test_application_token',
 		]]]]])));
-		$settings->shouldReceive('set')->with('static:application_id', 12345, ['type' => 'int']);
 		$settings->shouldReceive('set')->with('static:application_token', 'test_application_token', ['type' => 'string']);
+		$settings->shouldReceive('set')->with('static:application_id', 12345, ['type' => 'int']);
+		$settings->shouldReceive('load')->with('main:language')->once()->andReturn('cs');
 		$settings->shouldReceive('set')->with('static:synchronize', 0, ['type' => 'int']);
 
 		$settings->shouldReceive('load')->with('static:application_id')->andReturn(12345);
@@ -63,33 +62,33 @@ class SignTest extends TestCase
 
 	public function testInInvalid(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url());
+		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0'));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
 			Assert::same('{"email":"test@example.com","password":"test_password","eshop_name":"Test Eshop"}', $request->serialize());
 
 			return true;
 		}))->andReturn(new Response(json_encode(['data' => ['_generic' => ['server' => ['login' => []]]]])));
 
-		Assert::same(['error' => 'unknown_error'], $sign->in('test@example.com', 'test_password', 'Test Eshop', 'test_success_redirect'));
+		Assert::same(['error' => ['unknown_error']], $sign->in('test@example.com', 'test_password', 'Test Eshop', 'test_success_redirect'));
 	}
 
 
 	public function testInError(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url());
+		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0'));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
 			Assert::same('{"email":"test@example.com","password":"test_password","eshop_name":"Test Eshop"}', $request->serialize());
 
 			return true;
 		}))->andThrow(InvalidResponseException::class, 'test_error');
 
-		Assert::same(['error' => 'test_error'], $sign->in('test@example.com', 'test_password', 'Test Eshop', 'test_success_redirect'));
+		Assert::same(['error' => ['test_error']], $sign->in('test@example.com', 'test_password', 'Test Eshop', 'test_success_redirect'));
 	}
 
 
 	public function testOut(): void
 	{
-		$sign = new Sign($setting = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url());
+		$sign = new Sign($setting = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0'));
 		$setting->shouldReceive('delete')->with('static:application_token')->andReturnNull();
 
 		$sign->out();

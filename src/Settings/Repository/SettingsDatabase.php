@@ -78,7 +78,7 @@ class SettingsDatabase implements Settings
 			"`key` varchar(50) NOT NULL," .
 			"`type` varchar(50) NOT NULL DEFAULT 'string'," .
 			"`value` longtext DEFAULT NULL," .
-			"`datetime` int(11) NOT NULL DEFAULT unix_timestamp(current_timestamp())," .
+			"`datetime` int(11) NOT NULL," .
 			"`order` int(11) NOT NULL DEFAULT 0," .
 			"`synchronize_flag` varchar(50) NOT NULL DEFAULT 'none' COMMENT 'none/add/change/delete'," .
 			"PRIMARY KEY (`scope`,`key`)," .
