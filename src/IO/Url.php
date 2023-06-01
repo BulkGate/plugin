@@ -21,7 +21,7 @@ class Url
 	}
 
 
-	public function get(string $path): string
+	public function get(string $path = ''): string
 	{
 		return "$this->url/$path";
 	}
