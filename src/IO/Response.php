@@ -49,8 +49,9 @@ class Response
 			throw new InvalidResponseException('empty_response');
 		}
 
-		if (isset($decoded['error']))
+		if (!empty($decoded['error']))
 		{
+            //todo: error byva vetsinou array. Takze tady budeme propagovat 'unknown_error' a to neni moc user friendly!
 			throw new InvalidResponseException(is_string($decoded['error']) ? $decoded['error'] : 'unknown_error');
 		}
 
