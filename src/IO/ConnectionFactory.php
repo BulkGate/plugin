@@ -36,7 +36,6 @@ class ConnectionFactory
 
         $jwt = Jwt::encode([
 			'application_id' => $this->settings->load('static:application_id'),
-            'application_token' => $application_token ?? 'guest',
 			'application_url' => $this->application_url,
 			'application_product' => $this->application_product,
 			'application_language' => $this->settings->load('static:language') ?? 'en',

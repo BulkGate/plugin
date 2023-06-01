@@ -41,12 +41,12 @@ class Setting implements Entity
 	 */
 	public function __construct(array $list = [])
 	{
-		$this->scope = (string)($list['scope'] ?? 'main');
-		$this->key = (string)($list['key'] ?? 'unknown');
-		$this->type = (string)($list['type'] ?? Helpers::detectType($list['value'] ?? '') ?? 'string');
+		$this->scope = (string) ($list['scope'] ?? 'main');
+		$this->key = (string) ($list['key'] ?? 'unknown');
+		$this->type = (string) ($list['type'] ?? Helpers::detectType($list['value'] ?? '') ?? 'string');
 		$this->value = is_string($list['value'] ?? '') ? Helpers::deserializeValue($list['value'] ?? '', $this->type) : $list['value'] ?? '';
-		$this->datetime = (int)($list['datetime'] ?? time());
-		$this->order = (int)($list['order'] ?? 0);
-		$this->synchronize_flag = Helpers::checkEnum((string)($list['synchronize_flag'] ?? self::SynchronizeDefault), self::SynchronizeFlags, self::SynchronizeDefault);
+		$this->datetime = (int) ($list['datetime'] ?? time());
+		$this->order = (int) ($list['order'] ?? 0);
+		$this->synchronize_flag = Helpers::checkEnum((string) ($list['synchronize_flag'] ?? self::SynchronizeDefault), self::SynchronizeFlags, self::SynchronizeDefault);
 	}
 }

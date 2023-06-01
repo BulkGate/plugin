@@ -7,16 +7,7 @@ namespace BulkGate\Plugin\User;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{
-    Eshop\Configuration,
-    InvalidResponseException,
-    IO\Connection,
-    IO\Request,
-    IO\Url,
-    Settings\Settings,
-    Strict,
-    Utils\Jwt};
-use function array_merge;
+use BulkGate\{Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
 
 class Sign
 {
@@ -28,7 +19,7 @@ class Sign
 
 	private Url $url;
 
-    private Configuration $eshop_configuration;
+    private Configuration $configuration;
 
 
 	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration)
@@ -36,30 +27,27 @@ class Sign
 		$this->settings = $settings;
 		$this->connection = $connection;
 		$this->url = $url;
-        $this->eshop_configuration = $configuration;
+		$this->configuration = $configuration;
 	}
 
 
-	/**
-	 * @return array{token: string}
-	 */
-	public function authenticate(): array
+	public function authenticate(): ?string
 	{
-		return [
-			'token' => Jwt::encode([
-					'application_id' => $this->settings->load('static:application_id'),
-                    'application_url' => $this->eshop_configuration->url(),
-					// todo
-					'expire' => time() + 300
-				],
-				$this->settings->load('static:application_token') ?? 'guest'
-			) ?? 'guest'
-		];
+		$token = $this->settings->load('static:application_token');
+
+		return Jwt::encode([
+			'application_id' => $this->settings->load('static:application_id'),
+			'application_url' => $this->configuration->url(),
+			'application_product' => $this->configuration->product(),
+			'application_language' => $this->settings->load('main:language') ?? 'en',
+			'guest' => $token === null,
+			'expire' => time() + 300
+		], $token ?? '');
 	}
 
 
 	/**
-	 * @return array{token: string, redirect: string|null}|array{error: string}
+	 * @return array{token: string|null, redirect: string|null}|array{error: list<string>}
 	 */
 	public function in(string $email, string $password, ?string $eshop_name = null, ?string $success_redirect = null): array
 	{
@@ -75,7 +63,7 @@ class Sign
 
 			if (!isset($login['application_id']) || !isset($login['application_token']))
 			{
-				return ['error' => ['unknown_error']]; //todo: pouzit balicek pro response (react)
+				return ['error' => ['unknown_error']];
 			}
 
 			$this->settings->install();
@@ -84,11 +72,11 @@ class Sign
 			$this->settings->set('static:application_token', $login['application_token'], ['type' => 'string']);
 			$this->settings->set('static:synchronize', 0, ['type' => 'int']);
 
-			return array_merge($this->authenticate(), ['redirect' => $success_redirect]);
+			return ['token' => $this->authenticate(), 'redirect' => $success_redirect];
 		}
 		catch (InvalidResponseException $e)
 		{
-			return ['error' => [$e->getMessage()]]; //todo: pouzit balicek pro response (react)
+			return ['error' => [$e->getMessage()]];
 		}
 	}
 

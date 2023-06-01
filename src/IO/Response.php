@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\IO;
  */
 
 use BulkGate\Plugin\{AuthenticateException, Helpers, InvalidResponseException, Strict, Utils\JsonArray};
-use function is_string;
+use function array_key_exists, is_string, array_key_first, is_array;
 
 class Response
 {
@@ -49,11 +49,7 @@ class Response
 			throw new InvalidResponseException('empty_response');
 		}
 
-		if (!empty($decoded['error']))
-		{
-            //todo: error byva vetsinou array. Takze tady budeme propagovat 'unknown_error' a to neni moc user friendly!
-			throw new InvalidResponseException(is_string($decoded['error']) ? $decoded['error'] : 'unknown_error');
-		}
+		$this->checkError($decoded);
 
 		if (isset($decoded['signal']) && $decoded['signal'] === 'authenticate')
 		{
@@ -61,6 +57,32 @@ class Response
 		}
 
 		$this->data = $decoded;
+	}
+
+
+	/**
+	 * @param array<array-key, mixed> $array
+	 * @throws InvalidResponseException
+	 */
+	private function checkError(array $array): void
+	{
+		if (array_key_exists('error', $array))
+		{
+			if (is_string($array['error']))
+			{
+				throw new InvalidResponseException($array['error']);
+			}
+			else if (is_array($array['error']) && !empty($array['error']))
+			{
+				$key = array_key_first($array['error']);
+
+				throw new InvalidResponseException($array['error'][$key]);
+			}
+			else
+			{
+				throw new InvalidResponseException('unknown_error');
+			}
+		}
 	}
 
 
