@@ -31,9 +31,9 @@ class Sign
 	}
 
 
-	public function authenticate(): ?string
+	public function authenticate(bool $reload = false): ?string
 	{
-		$token = $this->settings->load('static:application_token');
+		$token = $this->settings->load('static:application_token', $reload);
 
 		return Jwt::encode([
 			'application_id' => $this->settings->load('static:application_id'),
@@ -49,30 +49,28 @@ class Sign
 	/**
 	 * @return array{token: string|null, redirect: string|null}|array{error: list<string>}
 	 */
-	public function in(string $email, string $password, ?string $eshop_name = null, ?string $success_redirect = null): array
+	public function in(string $email, string $password, ?string $success_redirect = null): array
 	{
 		try
 		{
-			$response = $this->connection->run(new Request($this->url->get('module/sign/in'), [
+			$response = $this->connection->run(new Request($this->url->get('api/1.0/token/get/permanent'), [
 				'email' => $email,
 				'password' => $password,
-				'eshop_name' => $eshop_name
+				'name' => $this->configuration->name(),
 			], 'application/json', 20));
 
-			$login = $response->get('::login');
-
-			if (!isset($login['application_id']) || !isset($login['application_token']))
+			if (!isset($response->data['data']['application_id']) || !isset($response->data['data']['application_token']))
 			{
 				return ['error' => ['unknown_error']];
 			}
 
 			$this->settings->install();
 
-			$this->settings->set('static:application_id', $login['application_id'], ['type' => 'int']);
-			$this->settings->set('static:application_token', $login['application_token'], ['type' => 'string']);
+			$this->settings->set('static:application_id', $response->data['data']['application_id'], ['type' => 'int']);
+			$this->settings->set('static:application_token', $response->data['data']['application_token'], ['type' => 'string']);
 			$this->settings->set('static:synchronize', 0, ['type' => 'int']);
 
-			return ['token' => $this->authenticate(), 'redirect' => $success_redirect];
+			return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
 		}
 		catch (InvalidResponseException $e)
 		{

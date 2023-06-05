@@ -18,11 +18,14 @@ class ConfigurationDefault implements Configuration
 
 	private string $version;
 
-	public function __construct(string $url, string $product, string $version)
+	private string $name;
+
+	public function __construct(string $url, string $product, string $version, string $name)
 	{
 		$this->url = $url;
 		$this->product = $product;
 		$this->version = $version;
+		$this->name = $name;
 	}
 
 
@@ -41,5 +44,11 @@ class ConfigurationDefault implements Configuration
 	public function version(): string
 	{
 		return $this->version;
+	}
+
+
+	public function name(): string
+	{
+		return $this->name;
 	}
 }

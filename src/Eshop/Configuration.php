@@ -15,5 +15,8 @@ interface Configuration
 	public function product(): string;
 
 
+	public function name(): string;
+
+
 	public function version(): string;
 }

@@ -19,12 +19,12 @@ class ConfigurationDefaultTest extends TestCase
 {
 	public function testBase(): void
 	{
-		$configuration = new ConfigurationDefault('https://eshop.bulkgate.com/', 'ws', '1.0.0');
+		$configuration = new ConfigurationDefault('https://eshop.bulkgate.com/', 'ws', '1.0.0', 'shop');
 
 		Assert::same('https://eshop.bulkgate.com/', $configuration->url());
 		Assert::same('ws', $configuration->product());
 		Assert::same('1.0.0', $configuration->version());
-
+		Assert::same('shop', $configuration->name());
 	}
 }
 

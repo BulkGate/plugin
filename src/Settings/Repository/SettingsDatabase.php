@@ -76,7 +76,7 @@ class SettingsDatabase implements Settings
 			"CREATE TABLE IF NOT EXISTS `{$this->db->table('bulkgate_module')}` (" .
 			"`scope` varchar(50) NOT NULL DEFAULT 'main'," .
 			"`key` varchar(50) NOT NULL," .
-			"`type` varchar(50) NOT NULL DEFAULT 'string'," .
+				"`type` varchar(50) NOT NULL DEFAULT 'string'," .
 			"`value` longtext DEFAULT NULL," .
 			"`datetime` int(11) NOT NULL," .
 			"`order` int(11) NOT NULL DEFAULT 0," .
@@ -87,7 +87,10 @@ class SettingsDatabase implements Settings
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
 		);
 
-		$this->db->execute("ALTER TABLE `{$this->db->table('bulkgate_module')}` ENGINE=InnoDB;");
+		$this->db->execute("ALTER TABLE `{$this->db->table('bulkgate_module')}` ".
+			"CHANGE `type` `type` varchar(50) COLLATE 'utf8_general_ci' NULL DEFAULT 'string' AFTER `key`, " .
+			"CHANGE `synchronize_flag` `synchronize_flag` varchar(50) COLLATE 'utf8_general_ci' NOT NULL DEFAULT 'none' AFTER `order`, " .
+			"ENGINE='InnoDB';");
 	}
 
 
