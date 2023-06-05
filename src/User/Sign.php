@@ -79,8 +79,13 @@ class Sign
 	}
 
 
-	public function out(): void
+	/**
+	 * @return array{token: string|null, redirect: string}
+	 */
+	public function out(string $success_redirect): array
 	{
 		$this->settings->delete('static:application_token');
+
+		return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
 	}
 }

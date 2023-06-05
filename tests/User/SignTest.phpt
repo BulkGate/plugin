@@ -88,10 +88,16 @@ class SignTest extends TestCase
 
 	public function testOut(): void
 	{
-		$sign = new Sign($setting = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
-		$setting->shouldReceive('delete')->with('static:application_token')->andReturnNull();
+		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$settings->shouldReceive('delete')->with('static:application_token')->andReturnNull();
+		$settings->shouldReceive('load')->with('static:application_token', true)->andReturnNull();
+		$settings->shouldReceive('load')->with('static:application_id')->andReturn(451);
+		$settings->shouldReceive('load')->with('main:language')->once()->andReturn('cs');
 
-		$sign->out();
+		Assert::equal([
+			'token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'),
+			'redirect' => 'redirect',
+		], $sign->out('redirect'));
 
 		Assert::true(true);
 	}
