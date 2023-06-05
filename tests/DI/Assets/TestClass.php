@@ -2,16 +2,25 @@
 
 interface Connection
 {
+	public function test(): string;
 }
 
 
 class ConnectionTest implements Connection
 {
+	public function test(): string
+	{
+		return 'test';
+	}
 }
 
 
 class ConnectionProduction implements Connection
 {
+	public function test(): string
+	{
+		return 'production';
+	}
 }
 
 
