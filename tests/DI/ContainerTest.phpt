@@ -28,6 +28,8 @@ class ContainerTest extends TestCase
 
 		Assert::type(\Connection::class, $container->getByClass(\Connection::class));
 		Assert::type(\ConnectionProduction::class, $container->getByClass(\Connection::class));
+		Assert::type(\ConnectionProduction::class, $container->getByClass(\ConnectionProduction::class));
+		Assert::same('production', $container->getByClass(\ConnectionProduction::class)->test());
 
 		Assert::same($container['production'], $container->getByClass(\Connection::class));
 		Assert::same($container['test'], $container->getService('test'));

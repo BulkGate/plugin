@@ -37,11 +37,13 @@ class Sign
 
 		return Jwt::encode([
 			'application_id' => $this->settings->load('static:application_id'),
-			'application_url' => $this->configuration->url(),
+			'application_installation' => $this->configuration->url(),
 			'application_product' => $this->configuration->product(),
 			'application_language' => $this->settings->load('main:language') ?? 'en',
-			'guest' => $token === null,
-			'expire' => time() + 300
+			'application_parameters' => [
+				'guest' => $token === null,
+				'expire' => time() + 300
+			],
 		], $token ?? '');
 	}
 
@@ -57,6 +59,7 @@ class Sign
 				'email' => $email,
 				'password' => $password,
 				'name' => $this->configuration->name(),
+				'url' => $this->configuration->url(),
 			], 'application/json', 20));
 
 			if (!isset($response->data['data']['application_id']) || !isset($response->data['data']['application_token']))

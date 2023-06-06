@@ -34,7 +34,7 @@ class SignTest extends TestCase
 		$settings->shouldReceive('install')->withNoArgs()->once();
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool
 		{
-			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop"}', $request->serialize());
+			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop","url":"url"}', $request->serialize());
 
 			return true;
 		}))->andReturn(new Response(json_encode(['data' => [
@@ -64,7 +64,7 @@ class SignTest extends TestCase
 	{
 		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
-			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop"}', $request->serialize());
+			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop","url":"url"}', $request->serialize());
 
 			return true;
 		}))->andReturn(new Response(json_encode(['data' => ['_generic' => ['server' => ['login' => []]]]])));
@@ -77,7 +77,7 @@ class SignTest extends TestCase
 	{
 		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
-			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop"}', $request->serialize());
+			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop","url":"url"}', $request->serialize());
 
 			return true;
 		}))->andThrow(InvalidResponseException::class, 'test_error');

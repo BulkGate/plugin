@@ -26,7 +26,7 @@ class Container implements ArrayAccess
 	private array $services = [];
 
 	/**
-	 * @var array<class-string<object>, array{name: string, factory?: class-string<T>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool, factory_method?: callable(mixed ...$parameters):T|null}>
+	 * @var array<class-string<T>, array{name: string, factory?: class-string<T>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<T>, instantiable: bool, factory_method?: callable(mixed ...$parameters):T|null}>
 	 */
 	private array $auto_wiring = [];
 
@@ -127,23 +127,17 @@ class Container implements ArrayAccess
 
 
 	/**
-	 * @template TX of object
-	 * @param class-string<TX> $class
+	 * @param class-string<T> $class
 	 * @return T
-	 * @throws MissingServiceException|MissingParameterException
 	 */
 	public function getByClass(string $class): object
 	{
-		if (isset($this->auto_wiring[$class]))
-		{
-			$service = $this->auto_wiring[$class];
-		}
-		else
+		if (!isset($this->auto_wiring[$class]))
 		{
 			throw new MissingServiceException("Service '$class' not found");
 		}
 
-		return $this->getService($service['name']);
+		return $this->getService($this->auto_wiring[$class]['name']);
 	}
 
 
@@ -184,7 +178,7 @@ class Container implements ArrayAccess
 				$type_reflection = $parameter->getType() ?? null;
 
 				/**
-				 * @var class-string<object>|string|null $parameter_type
+				 * @var string|null $parameter_type
 				 */
 				$parameter_type = $type_reflection instanceof \ReflectionNamedType ? $type_reflection->getName() : null;
 
@@ -194,6 +188,9 @@ class Container implements ArrayAccess
 				}
 				else if ($parameter_type !== null && (class_exists($parameter_type) || interface_exists($parameter_type)))
 				{
+					/**
+					 * @var class-string<T> $parameter_type
+					 */
 					$parameters[] = $this->getByClass($parameter_type);
 				}
 				else
