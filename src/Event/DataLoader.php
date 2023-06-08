@@ -9,5 +9,8 @@ namespace BulkGate\Plugin\Event;
 
 interface DataLoader
 {
-	public function load(Variables $variables): void;
+	/**
+	 * @param array<array-key, mixed> $parameters
+	 */
+	public function load(Variables $variables, array $parameters = []): void;
 }

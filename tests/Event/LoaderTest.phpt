@@ -27,11 +27,11 @@ class LoaderTest extends TestCase
 			$l2 = Mockery::mock(DataLoader::class),
 			$l3 = Mockery::mock(DataLoader::class)
 		]);
-		$l1->shouldReceive('load')->with($variables)->once();
-		$l2->shouldReceive('load')->with($variables)->once();
-		$l3->shouldReceive('load')->with($variables)->once();
+		$l1->shouldReceive('load')->with($variables, ['ok'])->once();
+		$l2->shouldReceive('load')->with($variables, ['ok'])->once();
+		$l3->shouldReceive('load')->with($variables, ['ok'])->once();
 
-		$loader->load($variables);
+		$loader->load($variables, ['ok']);
 
 		Assert::true(true);
 

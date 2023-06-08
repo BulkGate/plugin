@@ -28,9 +28,12 @@ class Dispatcher
 	}
 
 
-	public function dispatch(string $category, string $endpoint, Variables $variables): void
+	/**
+	 * @param array<array-key, mixed> $parameters
+	 */
+	public function dispatch(string $category, string $endpoint, Variables $variables, array $parameters = []): void
 	{
-		$this->loader->load($variables);
+		$this->loader->load($variables, $parameters);
 
 		if ($this->check($category, $endpoint, $variables))
 		{

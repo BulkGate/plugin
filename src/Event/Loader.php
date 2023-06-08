@@ -28,11 +28,14 @@ class Loader
 	}
 
 
-	public function load(Variables $variables): void
+	/**
+	 * @param array<array-key, mixed> $parameters
+	 */
+	public function load(Variables $variables, array $parameters = []): void
 	{
 		foreach ($this->loaders as $loader)
 		{
-			$loader->load($variables);
+			$loader->load($variables, $parameters);
 		}
 	}
 }

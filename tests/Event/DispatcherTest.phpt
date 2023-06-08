@@ -24,7 +24,7 @@ class DispatcherTest extends TestCase
 		$variables = new Variables();
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('all');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('cron');
 		$settings->shouldReceive('set')->with(Mockery::on(function (string $key): bool
@@ -45,7 +45,7 @@ class DispatcherTest extends TestCase
 		$variables = new Variables();
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('all');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('asset');
 		$settings->shouldReceive('set')->with(Mockery::on(function (string $key): bool
@@ -66,7 +66,7 @@ class DispatcherTest extends TestCase
 		$variables = new Variables();
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('all');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$hook->shouldReceive('dispatch')->with('order', 'new', [])->once();
@@ -82,14 +82,14 @@ class DispatcherTest extends TestCase
 		$variables = new Variables();
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, ['ok'])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturn('1');
 		$settings->shouldReceive('load')->with('admin_sms-default-0:order_new')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
 		$hook->shouldReceive('dispatch')->with('order', 'new', [])->once();
 
-		$dispatcher->dispatch('order', 'new', $variables);
+		$dispatcher->dispatch('order', 'new', $variables, ['ok']);
 
 		Mockery::close();
 	}
@@ -102,7 +102,7 @@ class DispatcherTest extends TestCase
 		$variables['order_status_id'] = 'delivered';
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturn('1');
@@ -123,7 +123,7 @@ class DispatcherTest extends TestCase
 		$variables['return_status_id'] = 'pending';
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturnNull();
@@ -143,7 +143,7 @@ class DispatcherTest extends TestCase
 		$variables['lang_id'] = 'cs';
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
-		$loader->shouldReceive('load')->with($variables)->once();
+		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturnNull();
 		$settings->shouldReceive('load')->with('admin_sms-default-0:return_new')->once()->andReturnNull();
