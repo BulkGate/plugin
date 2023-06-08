@@ -51,3 +51,14 @@ class TestClassEntity
 		$this->name = $name;
 	}
 }
+
+
+class TestService
+{
+	public ConnectionTest $service;
+
+	public function __construct(ConnectionTest $service)
+	{
+		$this->service = $service;
+	}
+}

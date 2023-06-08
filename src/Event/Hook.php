@@ -29,7 +29,7 @@ class Hook
 
 	/**
 	 * @param string $category order, customer, cart, product, return
-	 * @param array<string, scalar> $variables
+	 * @param array<string, scalar|null> $variables
 	 */
 	public function dispatch(string $category, string $endpoint, array $variables): void
 	{

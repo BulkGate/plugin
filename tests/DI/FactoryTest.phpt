@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\DI\Test;
  */
 
 use Tester\{Assert, TestCase};
-use BulkGate\Plugin\DI\{Factory, Container};
+use BulkGate\Plugin\DI\{Factory, Container, FactoryStatic};
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -39,14 +39,38 @@ class FactoryTest extends TestCase
 			}
 		};
 
-		$factory::setup(function (): array
-		{
-			return ['test' => 'test'];
-		});
+		$factory::setup(fn (): array => ['test' => 'test']);
 
 		Assert::same(['test' => 'test'], $factory::$parameters);
 
 		Assert::type(Container::class, $factory->get());
+	}
+
+
+	public function testFactoryStatic(): void
+	{
+		$factory = new class ($container = new Container()) implements Factory
+		{
+			use FactoryStatic;
+
+			private static Container $_container;
+
+			public function __construct(Container $container)
+			{
+				self::$_container = $container;
+			}
+
+			protected static function createContainer(array $parameters = []): Container
+			{
+				Assert::same(['test' => 'test'], $parameters);
+
+				return self::$_container;
+			}
+		};
+
+		$factory::setup(fn (): array => ['test' => 'test']);
+
+		Assert::same($container, $factory::get());
 	}
 }
 

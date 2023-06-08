@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\DI\Test;
  */
 
 use Tester\{Assert, TestCase};
-use Connection, TestClassEntity;
+use Connection, TestClassEntity, ConnectionTest;
 use BulkGate\Plugin\DI\{AutoWiringException, Container, InvalidStateException, MissingParameterException, MissingServiceException};
 
 require __DIR__ . '/../bootstrap.php';
@@ -114,6 +114,40 @@ class ContainerTest extends TestCase
 		Assert::same($container['production'], $container->getByClass(\Connection::class));
 		Assert::same($container['test'], $container->getService('test'));
 		Assert::same($container['production'], $container->getService('production'));
+	}
+
+
+	public function testFactoryMethod(): void
+	{
+		$container = new Container('rewrite');
+
+		$container['production'] = ['factory' => \ConnectionProduction::class, 'factory_method' => fn () => new \ConnectionProduction()];
+
+		Assert::type(\ConnectionProduction::class, $container->getByClass(\Connection::class));
+
+		Assert::same($container['production'], $container->getByClass(\Connection::class));
+		Assert::same($container['production'], $container->getService('production'));
+	}
+
+
+	public function testFactoryMethodInvalid(): void
+	{
+		$container = new Container('rewrite');
+		$container['production'] = ['factory' => \ConnectionTest::class, 'factory_method' => fn () => new \ConnectionProduction()];
+
+		Assert::exception(fn () => $container->getByClass(\Connection::class), MissingParameterException::class, 'Factory method must return instance of \'ConnectionTest\'');
+	}
+
+
+	public function testExistingService(): void
+	{
+		$container = new Container('rewrite');
+
+		$container['production'] = ['factory' => \TestService::class, 'parameters' => ['service' => $test = new ConnectionTest()]];
+
+		Assert::type(\TestService::class, $service = $container->getByClass(\TestService::class));
+
+		Assert::same($service->service, $test);
 	}
 }
 

@@ -13,4 +13,7 @@ interface Language
 	 * @return array<array-key, string>
 	 */
 	public function load(): array;
+
+
+	public function get(?int $id = null): string;
 }
