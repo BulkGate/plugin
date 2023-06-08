@@ -22,7 +22,17 @@ class Variables implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * @var array<string, scalar|null>
 	 */
-	private array $variables = [];
+	private array $variables;
+
+
+	/**
+	 * @param array<string, scalar|null> $variables
+	 */
+	public function __construct(array $variables = [])
+	{
+		$this->variables = $variables;
+	}
+
 
 	/**
 	 * @return array<string, scalar|null>
