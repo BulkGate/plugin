@@ -8,6 +8,7 @@ namespace BulkGate\Plugin\Event;
  */
 
 use BulkGate\Plugin\{IO\Request, IO\Url, Strict, IO\Connection};
+use function str_replace;
 
 class Hook
 {
@@ -33,6 +34,9 @@ class Hook
 	 */
 	public function dispatch(string $category, string $endpoint, array $variables): void
 	{
+		$category = str_replace('_', '-', $category);
+		$endpoint = str_replace('_', '-', $endpoint);
+
 		$this->connection->run(
 			new Request(
 				$this->url->get("api/$this->version/eshop/$category/$endpoint"),

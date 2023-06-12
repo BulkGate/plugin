@@ -23,7 +23,7 @@ class Helpers
 	 */
 	public static function key(string $key): array
 	{
-		if (preg_match('~^(\w+)?:?(\w+)?$~U', $key, $match, PREG_UNMATCHED_AS_NULL))
+		if (preg_match('~^([\w_-]+)?:?([\w_-]+)?$~U', $key, $match, PREG_UNMATCHED_AS_NULL))
 		{
 			[, $scope, $name] = $match;
 		}

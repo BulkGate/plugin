@@ -29,7 +29,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('cron');
 		$settings->shouldReceive('set')->with(Mockery::on(function (string $key): bool
 		{
-			Assert::match('~^asynchronous:asynchronous-\w+~', $key);
+			Assert::match('~^asynchronous:[\w_-]+~', $key);
 
 			return true;
 		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => []], ['type' => 'json'])->once();
@@ -50,7 +50,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('asset');
 		$settings->shouldReceive('set')->with(Mockery::on(function (string $key): bool
 		{
-			Assert::match('~^asynchronous:asynchronous-\w+~', $key);
+			Assert::match('~^asynchronous:[\w_-]+~', $key);
 
 			return true;
 		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => []], ['type' => 'json'])->once();

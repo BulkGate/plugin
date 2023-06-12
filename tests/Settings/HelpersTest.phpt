@@ -25,6 +25,9 @@ class HelpersTest extends TestCase
 		Assert::same(['scope', null], Helpers::key('scope:'));
 		Assert::same(['main', null], Helpers::key(''));
 
+		Assert::same(['test-test_sss', '_-test'], Helpers::key('test-test_sss:_-test'));
+		Assert::same(['sco_pe', 'te-st'], Helpers::key('sco_pe:te-st'));
+
 		Assert::same(['s_cope', 'test_sss'], Helpers::key('s_cope:test_sss'));
 		Assert::same(['main', 'test_sss'], Helpers::key('test_sss'));
 		Assert::same(['main', null], Helpers::key('test_sss : : test'));

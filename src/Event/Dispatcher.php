@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\Event;
  */
 
 use BulkGate\Plugin\{Strict, Settings\Settings};
-use function array_key_exists, in_array, str_replace, uniqid;
+use function array_key_exists, in_array, str_replace, uniqid, preg_replace;
 
 class Dispatcher
 {
@@ -39,7 +39,7 @@ class Dispatcher
 		{
 			if (in_array($this->settings->load('main:dispatcher') ?? 'direct', ['cron', 'asset'], true))
 			{
-				$id = uniqid('asynchronous-');
+				$id = preg_replace('~[^0-9a-zA-Z]~', '-', uniqid('', true));
 
 				$this->settings->set("asynchronous:$id", ['category' => $category, 'endpoint' => $endpoint, 'variables' => $variables->toArray()], ['type' => 'json']);
 			}

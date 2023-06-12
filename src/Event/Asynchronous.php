@@ -8,6 +8,7 @@ namespace BulkGate\Plugin\Event;
  */
 
 use BulkGate\Plugin\Strict;
+use function is_array, is_string;
 
 class Asynchronous
 {

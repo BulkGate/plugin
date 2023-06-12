@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\Event;
 
 use BulkGate\Plugin\Strict;
 use ArrayAccess, Countable, IteratorAggregate, ArrayIterator;
-use function array_key_exists, is_scalar, is_string;
+use function array_key_exists, is_scalar, is_string, trim;
 
 /**
  * @implements ArrayAccess<string, scalar|null>
