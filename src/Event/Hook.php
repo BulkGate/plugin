@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\Event;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{IO\Request, IO\Url, Strict, IO\Connection};
+use BulkGate\Plugin\{IO\Request, IO\Response, IO\Url, Strict, IO\Connection};
 use function str_replace;
 
 class Hook
@@ -37,10 +37,19 @@ class Hook
 		$category = str_replace('_', '-', $category);
 		$endpoint = str_replace('_', '-', $endpoint);
 
-		$this->connection->run(
+		$this->send("api/$this->version/eshop/$category/$endpoint", ['variables' => $variables]);
+	}
+
+
+	/**
+	 * @param array<string, mixed> $data
+	 */
+	public function send(string $path, array $data): Response
+	{
+		return $this->connection->run(
 			new Request(
-				$this->url->get("api/$this->version/eshop/$category/$endpoint"),
-				['variables' => $variables]
+				$this->url->get($path),
+				$data
 			)
 		);
 	}
