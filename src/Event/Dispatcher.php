@@ -14,6 +14,11 @@ class Dispatcher
 {
 	use Strict;
 
+	public const
+		Direct = 'direct',
+		Asset = 'asset',
+		Cron = 'cron';
+
 	private Settings $settings;
 
 	private Hook $hook;
@@ -37,7 +42,7 @@ class Dispatcher
 
 		if ($this->check($category, $endpoint, $variables))
 		{
-			if (in_array($this->settings->load('main:dispatcher') ?? 'direct', ['cron', 'asset'], true))
+			if (in_array($this->settings->load('main:dispatcher') ?? self::Direct, [self::Cron, self::Asset], true))
 			{
 				$id = preg_replace('~[^0-9a-zA-Z]~', '-', uniqid('', true));
 
