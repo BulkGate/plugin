@@ -16,7 +16,7 @@ interface Factory
 
 
 	/**
-	 * @return Container<object>
+	 * @return Container
 	 */
 	public static function get(): Container;
 }
