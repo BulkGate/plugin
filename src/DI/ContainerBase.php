@@ -13,14 +13,14 @@ use ReflectionClass, ReflectionException;
 use function array_key_exists, class_exists, interface_exists, is_array, is_string, is_subclass_of, uniqid;
 
 /**
- * @implements ArrayAccess<string, object|class-string<object>|array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<object>, instantiable: bool}>
+ * @implements ArrayAccess<string, object|class-string<object>|array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, factory_method?: callable(mixed ...$parameters):object|null, instantiable: bool, factory_method?: callable(mixed ...$parameters):object|null}>
  */
 abstract class ContainerBase implements ArrayAccess
 {
 	use Strict;
 
 	/**
-	 * @var array<string, array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<object>, instantiable: bool}>
+	 * @var array<string, array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, reflection: ReflectionClass<object>, instantiable: bool, factory_method?: callable(mixed ...$parameters):object|null}>
 	 */
 	private array $services = [];
 
