@@ -7,15 +7,15 @@ namespace BulkGate\Plugin\DI;
  * @link https://www.bulkgate.com/
  */
 
-use ArrayAccess;
+use ArrayAccess, Countable;
 use BulkGate\Plugin\Strict;
 use ReflectionClass, ReflectionException;
-use function array_key_exists, class_exists, interface_exists, is_array, is_string, is_subclass_of, uniqid;
+use function array_key_exists, class_exists, interface_exists, is_array, is_string, is_subclass_of, uniqid, count;
 
 /**
  * @implements ArrayAccess<string, object|class-string<object>|array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, factory_method?: callable(mixed ...$parameters):object|null, instantiable: bool, factory_method?: callable(mixed ...$parameters):object|null}>
  */
-abstract class ContainerBase implements ArrayAccess
+abstract class ContainerBase implements ArrayAccess, Countable
 {
 	use Strict;
 
@@ -298,5 +298,11 @@ abstract class ContainerBase implements ArrayAccess
 	public function offsetUnset($offset): void
 	{
 		throw new InvalidStateException('Invalid unset operation');
+	}
+
+
+	public function count(): int
+	{
+		return count($this->services);
 	}
 }
