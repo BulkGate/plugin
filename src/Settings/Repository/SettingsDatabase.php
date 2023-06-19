@@ -91,6 +91,8 @@ class SettingsDatabase implements Settings
 			"CHANGE `type` `type` varchar(50) NULL DEFAULT 'string' AFTER `key`, " .
 			"CHANGE `synchronize_flag` `synchronize_flag` varchar(50) NOT NULL DEFAULT 'none' AFTER `order`, " .
 			"ENGINE='InnoDB';");
+
+		$this->db->execute("UPDATE `{$this->db->table('bulkgate_module')}` SET `synchronize_flag` = 'delete', `datetime` = UNIX_TIMESTAMP() WHERE `scope` IN ('translates', 'menu');");
 	}
 
 

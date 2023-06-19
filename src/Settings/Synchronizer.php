@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\Settings;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{IO\Url, Strict, AuthenticateException, InvalidResponseException};
+use BulkGate\Plugin\{Eshop\Configuration, IO\Url, Strict, AuthenticateException, InvalidResponseException};
 
 class Synchronizer
 {
@@ -19,11 +19,14 @@ class Synchronizer
 
 	private Url $url;
 
-	public function __construct(Repository\Synchronization $repository, Settings $settings, Url $url)
+	private Configuration $configuration;
+
+	public function __construct(Repository\Synchronization $repository, Settings $settings, Url $url, Configuration $configuration)
 	{
 		$this->repository = $repository;
 		$this->settings = $settings;
 		$this->url = $url;
+		$this->configuration = $configuration;
 	}
 
 
@@ -31,6 +34,8 @@ class Synchronizer
 	{
 		try
 		{
+			$this->checkUpdate();
+
 			if ($immediately || ($this->settings->load('static:synchronize') ?? 0) < time() && ($this->settings->load('static:application_id') ?? false))
 			{
 				$plugin_settings = $this->repository->loadPluginSettings();
@@ -65,6 +70,18 @@ class Synchronizer
 		}
 		catch (InvalidResponseException $e)
 		{
+		}
+	}
+
+
+	private function checkUpdate(): void
+	{
+		if ($this->settings->load('static:version') !== $this->configuration->version())
+		{
+			$this->settings->install(true);
+			$this->settings->set('static:version', $this->configuration->version(), [
+				'type' => 'string',
+			]);
 		}
 	}
 }

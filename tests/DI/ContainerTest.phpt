@@ -148,6 +148,8 @@ class ContainerTest extends TestCase
 		Assert::type(\TestService::class, $service = $container->getByClass(\TestService::class));
 
 		Assert::same($service->service, $test);
+
+		Assert::count(1, $container);
 	}
 }
 

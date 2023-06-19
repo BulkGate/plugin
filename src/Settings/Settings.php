@@ -84,11 +84,14 @@ class Settings
 	}
 
 
-	public function install(): void
+	public function install(bool $update = false): void
 	{
 		$this->repository->createTable();
 
-		$this->set('static:synchronize', 0, ['type' => 'int']);
+		if (!$update)
+		{
+			$this->set('static:synchronize', 0, ['type' => 'int']);
+		}
 	}
 
 
