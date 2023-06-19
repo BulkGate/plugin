@@ -18,12 +18,6 @@ trait FactoryStatic
 	 */
 	private static $parameters_callback;
 
-	/**
-	 * @var array<string, mixed>
-	 */
-	private static array $parameters;
-
-
 	public static function setup(callable $callback): void
 	{
 		self::$parameters_callback = $callback;
@@ -34,12 +28,7 @@ trait FactoryStatic
 	{
 		if (!isset(self::$container))
 		{
-			if (!isset(self::$parameters))
-			{
-				self::$parameters = isset(self::$parameters_callback) && is_callable(self::$parameters_callback) ? (self::$parameters_callback)() : [];
-			}
-
-			self::$container = self::createContainer(self::$parameters);
+			self::$container = self::createContainer(isset(self::$parameters_callback) && is_callable(self::$parameters_callback) ? (self::$parameters_callback)() : []);
 		}
 
 		return self::$container;
