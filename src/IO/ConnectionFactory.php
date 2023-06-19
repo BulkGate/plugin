@@ -27,25 +27,27 @@ class ConnectionFactory
 	}
 
 
-	/**
-	 * @throws InvalidJwtException
-	 */
 	public function create(): Connection
 	{
-		$application_token = $this->settings->load('static:application_token');
-
-		$jwt = Jwt::encode([
-			'application_id' => $this->settings->load('static:application_id'),
-			'application_url' => $this->application_url,
-			'application_product' => $this->application_product,
-			'application_language' => $this->settings->load('static:language') ?? 'en',
-		], $application_token ?? '');
-
-		if ($jwt === null)
+		$token_factory = function (): string
 		{
-			throw new InvalidJwtException('Unable to create JWT');
-		}
+			$application_token = $this->settings->load('static:application_token');
 
-		return new ConnectionStream($jwt);
+			$jwt = Jwt::encode([
+				'application_id' => $this->settings->load('static:application_id'),
+				'application_url' => $this->application_url,
+				'application_product' => $this->application_product,
+				'application_language' => $this->settings->load('static:language') ?? 'en',
+			], $application_token ?? '');
+
+			if ($jwt === null)
+			{
+				throw new InvalidJwtException('Unable to create JWT');
+			}
+
+			return $jwt;
+		};
+
+		return new ConnectionStream($token_factory);
 	}
 }

@@ -21,7 +21,7 @@ class ConnectionStreamTest extends TestCase
 {
 	public function testRun(): void
 	{
-		$connection = new ConnectionStream('token');
+		$connection = new ConnectionStream(fn () => 'token');
 
 		$response = $connection->run(new Request('https://portal.bulkgate.com/', ['ok'], 'application/json', 50));
 

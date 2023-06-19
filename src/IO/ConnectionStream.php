@@ -14,11 +14,16 @@ class ConnectionStream implements Connection
 {
 	use Strict;
 
+	/**
+	 * @var callable(): string $jwt_factory
+	 */
+	public $jwt_factory;
+
 	private string $jwt_token;
 
-	public function __construct(string $jwt_token)
+	public function __construct(callable $jwt_factory)
 	{
-		$this->jwt_token = $jwt_token;
+		$this->jwt_factory = $jwt_factory;
 	}
 
 
@@ -28,6 +33,8 @@ class ConnectionStream implements Connection
 	 */
 	public function run(Request $request): Response
 	{
+		$this->jwt_token ??= ($this->jwt_factory)();
+
 		$context = stream_context_create(['http' => [
 			'method' => 'POST',
 			'header' => [
