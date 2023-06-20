@@ -28,9 +28,11 @@ class Asynchronous
 	/**
 	 * @param positive-int $limit
 	 */
-	public function run(int $limit): void
+	public function run(int $limit): int
 	{
 		$list = $this->repository->load($limit);
+
+		$counter = 0;
 
 		foreach ($list as $item)
 		{
@@ -43,10 +45,13 @@ class Asynchronous
 				if (is_string($category) && is_string($endpoint) && is_array($variables))
 				{
 					$this->hook->dispatch($category, $endpoint, $variables);
+
+					$counter ++;
 				}
 			}
 
 			$this->repository->finish($item->key);
 		}
+		return $counter;
 	}
 }

@@ -36,9 +36,7 @@ class AsynchronousTest extends TestCase
 
 		$asynchronous = new Asynchronous($repository, $hook);
 
-		$asynchronous->run(3);
-
-		Assert::true(true);
+		Assert::same(2, $asynchronous->run(3));
 
 		Mockery::close();
 	}

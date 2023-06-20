@@ -41,9 +41,12 @@ class AsynchronousDatabase implements Asynchronous
 				$collection[] = new Entity\Task($record);
 			}
 
-			$keys_sql = implode("','", $keys);
+			if ($keys !== [])
+			{
+				$keys_sql = implode("','", $keys);
 
-			$this->db->execute("UPDATE `{$this->db->table('bulkgate_module')}` SET `order` = -1 WHERE `scope` = 'asynchronous' AND `key` IN ('$keys_sql')");
+				$this->db->execute("UPDATE `{$this->db->table('bulkgate_module')}` SET `order` = -1 WHERE `scope` = 'asynchronous' AND `key` IN ('$keys_sql')");
+			}
 
 			$this->db->execute("COMMIT");
 		}
