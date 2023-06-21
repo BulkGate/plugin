@@ -40,6 +40,7 @@ class Sign
 			'application_installation' => $this->configuration->url(),
 			'application_product' => $this->configuration->product(),
 			'application_language' => $this->settings->load('main:language') ?? 'en',
+			'application_version' => $this->configuration->version(),
 			'application_parameters' => [
 				'guest' => $token === null,
 				'expire' => time() + 300
