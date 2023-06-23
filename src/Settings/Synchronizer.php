@@ -84,4 +84,10 @@ class Synchronizer
 			]);
 		}
 	}
+
+
+	public function getLastSync(): int
+	{
+		return (int) ($this->settings->load('static:synchronize') ?? 0) - (int) ($this->settings->load('main:synchronize_interval') ?? 3_600);
+	}
 }

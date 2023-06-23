@@ -68,6 +68,16 @@ class SynchronizerTest extends TestCase
 	}
 
 
+	public function testGetLastSync(): void
+	{
+		$synchronizer = new Synchronizer(Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), Mockery::mock(Configuration::class));
+		$settings->shouldReceive('load')->with('static:synchronize')->once()->andReturn(501);
+		$settings->shouldReceive('load')->with('main:synchronize_interval')->once()->andReturn(50);
+
+		Assert::same(451, $synchronizer->getLastSync());
+	}
+
+
 	public function tearDown(): void
 	{
 		Mockery::close();
