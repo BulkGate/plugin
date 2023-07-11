@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\Event;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{IO\Request, IO\Response, IO\Url, Strict, IO\Connection};
+use BulkGate\Plugin\{AuthenticateException, Debug\Logger, InvalidResponseException, IO\Request, IO\Response, IO\Url, Strict, IO\Connection, Utils\JsonArray};
 use function str_replace;
 
 class Hook
@@ -20,11 +20,14 @@ class Hook
 
 	private Url $url;
 
-	public function __construct(string $version, Connection $connection, Url $url)
+	private Logger $logger;
+
+	public function __construct(string $version, Connection $connection, Url $url, Logger $logger)
 	{
 		$this->version = $version;
 		$this->connection = $connection;
 		$this->url = $url;
+		$this->logger = $logger;
 	}
 
 
@@ -44,13 +47,22 @@ class Hook
 	/**
 	 * @param array<string, mixed> $data
 	 */
-	public function send(string $path, array $data): Response
+	public function send(string $path, array $data): ?Response
 	{
-		return $this->connection->run(
-			new Request(
-				$this->url->get($path),
-				$data
-			)
-		);
+		try
+		{
+			return $this->connection->run(
+				new Request(
+					$this->url->get($path),
+					$data
+				)
+			);
+		}
+		catch (AuthenticateException|InvalidResponseException $e)
+		{
+			$this->logger->log("Hook Error: '$path' - {$e->getMessage()}, " . JsonArray::encode($data));
+
+			return null;
+		}
 	}
 }

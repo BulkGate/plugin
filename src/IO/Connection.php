@@ -7,7 +7,12 @@ namespace BulkGate\Plugin\IO;
  * @link https://www.bulkgate.com/
  */
 
+use BulkGate\Plugin\{AuthenticateException, InvalidResponseException};
+
 interface Connection
 {
+	/**
+	 * @throws AuthenticateException|InvalidResponseException
+	 */
 	public function run(Request $request): Response;
 }

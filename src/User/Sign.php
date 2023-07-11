@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\User;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\{Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
+use BulkGate\{Plugin\AuthenticateException, Plugin\Debug\Logger, Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
 
 class Sign
 {
@@ -21,13 +21,16 @@ class Sign
 
     private Configuration $configuration;
 
+	private Logger $logger;
 
-	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration)
+
+	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration, Logger $logger)
 	{
 		$this->settings = $settings;
 		$this->connection = $connection;
 		$this->url = $url;
 		$this->configuration = $configuration;
+		$this->logger = $logger;
 	}
 
 
@@ -76,8 +79,10 @@ class Sign
 
 			return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
 		}
-		catch (InvalidResponseException $e)
+		catch (InvalidResponseException|AuthenticateException $e)
 		{
+			$this->logger->log("Sign Error: {$e->getMessage()}");
+
 			return ['error' => [$e->getMessage()]];
 		}
 	}

@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\User\Test;
 
 use Mockery;
 use Tester\{Assert, Expect, TestCase};
-use BulkGate\Plugin\{Eshop\ConfigurationDefault, InvalidResponseException, IO\Connection, IO\Request, IO\Response, IO\Url, Settings\Settings, User\Sign};
+use BulkGate\Plugin\{Debug\Logger, Eshop\ConfigurationDefault, InvalidResponseException, IO\Connection, IO\Request, IO\Response, IO\Url, Settings\Settings, User\Sign};
 use function json_encode;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -18,7 +18,7 @@ class SignTest extends TestCase
 {
 	public function testAuthenticate(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'), Mockery::mock(Logger::class));
 
 		$settings->shouldReceive('load')->with('static:application_token', false)->once()->andReturn('test_application_token');
 		$settings->shouldReceive('load')->with('static:application_id')->once()->andReturn(12345);
@@ -30,7 +30,7 @@ class SignTest extends TestCase
 
 	public function testIn(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$sign = new Sign($settings = Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'), Mockery::mock(Logger::class));
 		$settings->shouldReceive('install')->withNoArgs()->once();
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool
 		{
@@ -62,7 +62,7 @@ class SignTest extends TestCase
 
 	public function testInInvalid(): void
 	{
-		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'), Mockery::mock(Logger::class));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
 			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop","url":"url"}', $request->serialize());
 
@@ -75,12 +75,13 @@ class SignTest extends TestCase
 
 	public function testInError(): void
 	{
-		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$sign = new Sign(Mockery::mock(Settings::class), $connection = Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'), $logger = Mockery::mock(Logger::class));
 		$connection->shouldReceive('run')->with(Mockery::on(function (Request $request): bool {
 			Assert::same('{"email":"test@example.com","password":"test_password","name":"Test Eshop","url":"url"}', $request->serialize());
 
 			return true;
 		}))->andThrow(InvalidResponseException::class, 'test_error');
+		$logger->shouldReceive('log')->with('Sign Error: test_error')->once();
 
 		Assert::same(['error' => ['test_error']], $sign->in('test@example.com', 'test_password', 'test_success_redirect'));
 	}
@@ -88,7 +89,7 @@ class SignTest extends TestCase
 
 	public function testOut(): void
 	{
-		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'));
+		$sign = new Sign($settings = Mockery::mock(Settings::class), Mockery::mock(Connection::class), new Url(), new ConfigurationDefault('url', 'eshop', '1.0', 'Test Eshop'), Mockery::mock(Logger::class));
 		$settings->shouldReceive('delete')->with('static:application_token')->andReturnNull();
 		$settings->shouldReceive('load')->with('static:application_token', true)->andReturnNull();
 		$settings->shouldReceive('load')->with('static:application_id')->andReturn(451);

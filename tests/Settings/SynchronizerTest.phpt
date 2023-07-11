@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\Settings\Test;
 
 use Mockery;
 use Tester\{Assert, TestCase};
-use BulkGate\Plugin\{AuthenticateException, Eshop\Configuration, InvalidResponseException, IO\Url, Settings\Repository\Synchronization, Settings\Synchronizer, Structure\Collection, Settings\Repository\Entity\Setting, Settings\Settings};
+use BulkGate\Plugin\{AuthenticateException, Debug\Logger, Eshop\Configuration, InvalidResponseException, IO\Url, Settings\Repository\Synchronization, Settings\Synchronizer, Structure\Collection, Settings\Repository\Entity\Setting, Settings\Settings};
 use function time;
 
 require __DIR__ . '/../bootstrap.php';
@@ -21,7 +21,7 @@ class SynchronizerTest extends TestCase
 {
 	public function testSynchronize(): void
 	{
-		$synchronizer = new Synchronizer($repository = Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), $configuration = Mockery::mock(Configuration::class));
+		$synchronizer = new Synchronizer($repository = Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), $configuration = Mockery::mock(Configuration::class), Mockery::mock(Logger::class));
 		$repository->shouldReceive('loadPluginSettings')->once()->withNoArgs()->andReturn($plugin = new Collection(Setting::class, [
 			'main:key1' => new Setting(['scope' => 'main', 'key' => 'key1', 'value' => 'value1', 'datetime' => 150]),
 			'main:key2' => new Setting(['scope' => 'main', 'key' => 'key2', 'value' => 'value2', 'datetime' => 150]),
@@ -49,7 +49,7 @@ class SynchronizerTest extends TestCase
 
 	public function testExceptions(): void
 	{
-		$synchronizer = new Synchronizer($repository = Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), $configuration = Mockery::mock(Configuration::class));
+		$synchronizer = new Synchronizer($repository = Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), $configuration = Mockery::mock(Configuration::class), $logger = Mockery::mock(Logger::class));
 		$repository->shouldReceive('loadPluginSettings')->withNoArgs()->twice()->andReturn($plugin = new Collection(Setting::class, [
 			'main:key1' => new Setting(['scope' => 'main', 'key' => 'key1', 'value' => 'value1', 'datetime' => 150]),
 			'main:key2' => new Setting(['scope' => 'main', 'key' => 'key2', 'value' => 'value2', 'datetime' => 150]),
@@ -58,9 +58,10 @@ class SynchronizerTest extends TestCase
 		$configuration->shouldReceive('version')->withNoArgs()->times(4)->andReturn('2.0.0');
 		$settings->shouldReceive('install')->with(true)->twice();
 		$settings->shouldReceive('set')->with('static:version', '2.0.0', ['type' => 'string'])->twice();
-		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(AuthenticateException::class);
-		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(InvalidResponseException::class);
+		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(AuthenticateException::class, 'authenticate');
+		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(InvalidResponseException::class, 'invalid response');
 		$settings->shouldReceive('delete')->with('static:application_token')->once();
+		$logger->shouldReceive('log')->with('Synchronization Error: invalid response')->once();
 		$synchronizer->synchronize(true);
 		$synchronizer->synchronize(true);
 
@@ -70,7 +71,7 @@ class SynchronizerTest extends TestCase
 
 	public function testGetLastSync(): void
 	{
-		$synchronizer = new Synchronizer(Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), Mockery::mock(Configuration::class));
+		$synchronizer = new Synchronizer(Mockery::mock(Synchronization::class), $settings = Mockery::mock(Settings::class), new Url(), Mockery::mock(Configuration::class), Mockery::mock(Logger::class));
 		$settings->shouldReceive('load')->with('static:synchronize')->once()->andReturn(501);
 		$settings->shouldReceive('load')->with('main:synchronize_interval')->once()->andReturn(50);
 

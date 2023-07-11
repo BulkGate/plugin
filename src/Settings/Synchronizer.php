@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\Settings;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\Plugin\{Eshop\Configuration, IO\Url, Strict, AuthenticateException, InvalidResponseException};
+use BulkGate\Plugin\{Debug\Logger, Eshop\Configuration, IO\Url, Strict, AuthenticateException, InvalidResponseException};
 
 class Synchronizer
 {
@@ -21,12 +21,15 @@ class Synchronizer
 
 	private Configuration $configuration;
 
-	public function __construct(Repository\Synchronization $repository, Settings $settings, Url $url, Configuration $configuration)
+	private Logger $logger;
+
+	public function __construct(Repository\Synchronization $repository, Settings $settings, Url $url, Configuration $configuration, Logger $logger)
 	{
 		$this->repository = $repository;
 		$this->settings = $settings;
 		$this->url = $url;
 		$this->configuration = $configuration;
+		$this->logger = $logger;
 	}
 
 
@@ -70,6 +73,7 @@ class Synchronizer
 		}
 		catch (InvalidResponseException $e)
 		{
+			$this->logger->log("Synchronization Error: {$e->getMessage()}");
 		}
 	}
 
