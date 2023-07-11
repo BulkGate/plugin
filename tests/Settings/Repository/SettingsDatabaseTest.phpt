@@ -102,7 +102,7 @@ class SettingsDatabaseTest extends TestCase
 		$repository = new SettingsDatabase($connection = Mockery::mock(Connection::class));
 		$connection->shouldReceive('table')->with('bulkgate_module')->times(3)->andReturn('prefix_bulkgate_module');
 		$connection->shouldReceive('execute')->with('CREATE TABLE IF NOT EXISTS `prefix_bulkgate_module` (`scope` varchar(50) NOT NULL DEFAULT \'main\',`key` varchar(50) NOT NULL,`type` varchar(50) NOT NULL DEFAULT \'string\',`value` longtext DEFAULT NULL,`datetime` int(11) NOT NULL,`order` int(11) NOT NULL DEFAULT 0,`synchronize_flag` varchar(50) NOT NULL DEFAULT \'none\' COMMENT \'none/add/change/delete\',PRIMARY KEY (`scope`,`key`),KEY `synchronize_flag` (`synchronize_flag`),KEY `scope_synchronize_flag` (`scope`,`synchronize_flag`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')->once()->andReturnNull();
-		$connection->shouldReceive('execute')->with('ALTER TABLE `prefix_bulkgate_module` CHANGE `type` `type` varchar(50) NULL DEFAULT \'string\' AFTER `key`, CHANGE `synchronize_flag` `synchronize_flag` varchar(50) NOT NULL DEFAULT \'none\' AFTER `order`, ENGINE=\'InnoDB\';')->once();
+		$connection->shouldReceive('execute')->with('ALTER TABLE `prefix_bulkgate_module` CHANGE `type` `type` varchar(50) NULL DEFAULT \'string\' AFTER `key`, CHANGE `value` `value` longtext DEFAULT NULL AFTER `type`,CHANGE `synchronize_flag` `synchronize_flag` varchar(50) NOT NULL DEFAULT \'none\' AFTER `order`, ENGINE=\'InnoDB\';')->once();
 		$connection->shouldReceive('execute')->with('UPDATE `prefix_bulkgate_module` SET `synchronize_flag` = \'delete\', `datetime` = UNIX_TIMESTAMP() WHERE `scope` IN (\'translates\', \'menu\');')->once();
 
 		$repository->createTable();

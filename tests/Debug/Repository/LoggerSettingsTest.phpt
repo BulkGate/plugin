@@ -102,4 +102,4 @@ class LoggerSettingsTest extends TestCase
 	}
 }
 
-(new LoggerTest())->run();
+(new LoggerSettingsTest())->run();

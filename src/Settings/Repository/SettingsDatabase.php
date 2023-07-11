@@ -89,6 +89,7 @@ class SettingsDatabase implements Settings
 
 		$this->db->execute("ALTER TABLE `{$this->db->table('bulkgate_module')}` ".
 			"CHANGE `type` `type` varchar(50) NULL DEFAULT 'string' AFTER `key`, " .
+			"CHANGE `value` `value` longtext DEFAULT NULL AFTER `type`," .
 			"CHANGE `synchronize_flag` `synchronize_flag` varchar(50) NOT NULL DEFAULT 'none' AFTER `order`, " .
 			"ENGINE='InnoDB';");
 
