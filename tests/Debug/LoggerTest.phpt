@@ -8,8 +8,8 @@ namespace BulkGate\Plugin\Debug\Test;
  */
 
 use Mockery;
-use BulkGate\Plugin\{Debug\Logger, Debug\Repository\Logger as Repository};
 use Tester\{Assert, TestCase};
+use BulkGate\Plugin\{Debug\Logger, Debug\Repository\Logger as Repository};
 
 require __DIR__ . '/../bootstrap.php';
 
