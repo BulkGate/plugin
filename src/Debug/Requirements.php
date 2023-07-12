@@ -8,7 +8,8 @@ namespace BulkGate\Plugin\Debug;
  */
 
 use BulkGate\Plugin\Strict;
-use function base64_decode, serialize, unserialize, extension_loaded, json_decode, json_encode, error_get_last;
+use function base64_decode, base64_encode, serialize, unserialize, extension_loaded, json_decode, json_encode, error_get_last;
+use const PHP_VERSION_ID;
 
 class Requirements
 {
@@ -27,11 +28,11 @@ class Requirements
 	 */
 	public function run(array $output = []): array
 	{
-		$output[] = $this->same(true, PHP_VERSION_ID >= 70400, 'PHP >= 7.4 version');
-		$output[] = $this->same(true, extension_loaded('intl'), 'INTL extension', true);
-		$output[] = $this->same(true, extension_loaded('curl'), 'cURL extension', true);
-		$output[] = $this->same(true, extension_loaded('mbstring'), 'Multibyte string extension', true);
-		$output[] = $this->same(true, extension_loaded('zlib'), 'Compression extension', true);
+		$output[] = $this->same(true, PHP_VERSION_ID >= 70400, 'PHP >= 7.4 Version');
+		$output[] = $this->same(true, extension_loaded('intl'), 'INTL Extension', true);
+		$output[] = $this->same(true, extension_loaded('curl'), 'cURL Extension', true);
+		$output[] = $this->same(true, extension_loaded('mbstring'), 'Multibyte String Extension', true);
+		$output[] = $this->same(true, extension_loaded('zlib'), 'Compression Extension', true);
 		$output[] = $this->same('BulkGate', unserialize(serialize('BulkGate')), 'Serialize');
 		$output[] = $this->same('BulkGate', base64_decode(base64_encode('BulkGate')), 'Base64');
 		$output[] = $this->same(['BulkGate' => 'portal'], json_decode((string) json_encode(['BulkGate' => 'portal']), true), 'JSON');
@@ -63,7 +64,7 @@ class Requirements
 		else
 		{
 			$error = error_get_last();
-			$error_message = $error !== null ? $error['message'] : null;
+			$error_message = $error !== null ? $error['message'] : json_encode($actual) . ' !== ' . json_encode($excepted);
 
 			return [
 				'passed' => false,
