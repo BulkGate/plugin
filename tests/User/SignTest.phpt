@@ -55,10 +55,6 @@ class SignTest extends TestCase
             'token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'),
             'data' => ['redirect' => 'test_redirect']
         ], $result);
-
-		Assert::type('array', $result);
-		Assert::true(isset($result['token']));
-		Assert::type('string', $result['token']);
 	}
 
 
@@ -101,9 +97,7 @@ class SignTest extends TestCase
 			'token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'),
 			'data' => ['redirect' => 'test_redirect'],
 		], $sign->out('test_redirect'));
-
-		Assert::true(true);
-	}
+    }
 
 
 	public function tearDown(): void
