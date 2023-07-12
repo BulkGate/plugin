@@ -53,7 +53,7 @@ class Sign
 
 
 	/**
-	 * @return array{token: string|null, redirect: string|null}|array{error: list<string>}
+	 * @return array{token: string|null, data: array{redirect: string|null}}|array{error: list<string>}
 	 */
 	public function in(string $email, string $password, ?string $success_redirect = null): array
 	{
@@ -89,7 +89,7 @@ class Sign
 
 
 	/**
-	 * @return array{token: string|null, redirect: string}
+	 * @return array{token: string|null, data: array{redirect: string}}
 	 */
 	public function out(string $success_redirect): array
 	{
