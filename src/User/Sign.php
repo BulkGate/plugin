@@ -77,7 +77,7 @@ class Sign
 			$this->settings->set('static:application_token', $response->data['data']['application_token'], ['type' => 'string']);
 			$this->settings->set('static:synchronize', 0, ['type' => 'int']);
 
-			return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
+			return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
 		}
 		catch (InvalidResponseException|AuthenticateException $e)
 		{
@@ -95,6 +95,6 @@ class Sign
 	{
 		$this->settings->delete('static:application_token');
 
-		return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
+		return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
 	}
 }
