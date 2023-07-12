@@ -49,14 +49,12 @@ class SignTest extends TestCase
 		$settings->shouldReceive('load')->with('static:application_token', true)->andReturn('test_application_token');
 		$settings->shouldReceive('load')->with('static:application_id')->andReturn(12345);
 
-		$result = $sign->in('test@example.com', 'test_password', 'test_success_redirect');
+		$result = $sign->in('test@example.com', 'test_password', 'test_redirect');
 
-		Assert::equal(['token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'), 'redirect' => 'test_success_redirect'], $result);
-
-		Assert::type('array', $result);
-		Assert::true(isset($result['token']));
-		Assert::type('string', $result['token']);
-		Assert::same('test_success_redirect', $result['redirect']);
+		Assert::equal([
+            'token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'),
+            'data' => ['redirect' => 'test_redirect']
+        ], $result);
 	}
 
 
@@ -97,11 +95,9 @@ class SignTest extends TestCase
 
 		Assert::equal([
 			'token' => Expect::match('~^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$~'),
-			'redirect' => 'redirect',
-		], $sign->out('redirect'));
-
-		Assert::true(true);
-	}
+			'data' => ['redirect' => 'test_redirect'],
+		], $sign->out('test_redirect'));
+    }
 
 
 	public function tearDown(): void

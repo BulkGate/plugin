@@ -53,7 +53,7 @@ class Sign
 
 
 	/**
-	 * @return array{token: string|null, redirect: string|null}|array{error: list<string>}
+	 * @return array{token: string|null, data: array{redirect: string|null}}|array{error: list<string>}
 	 */
 	public function in(string $email, string $password, ?string $success_redirect = null): array
 	{
@@ -77,7 +77,7 @@ class Sign
 			$this->settings->set('static:application_token', $response->data['data']['application_token'], ['type' => 'string']);
 			$this->settings->set('static:synchronize', 0, ['type' => 'int']);
 
-			return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
+			return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
 		}
 		catch (InvalidResponseException|AuthenticateException $e)
 		{
@@ -89,12 +89,12 @@ class Sign
 
 
 	/**
-	 * @return array{token: string|null, redirect: string}
+	 * @return array{token: string|null, data: array{redirect: string}}
 	 */
 	public function out(string $success_redirect): array
 	{
 		$this->settings->delete('static:application_token');
 
-		return ['token' => $this->authenticate(true), 'redirect' => $success_redirect];
+		return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
 	}
 }
