@@ -58,7 +58,9 @@ class Dispatcher
 
 	private function check(string $category, string $endpoint, Variables $variables): bool
 	{
-		if (($this->settings->load('main:synchronize') ?? 'all') === 'all')
+		$variables['contact_synchronize'] = $this->settings->load('main:synchronize') ?? 'all';
+
+		if ($variables['contact_synchronize'] === 'all')
 		{
 			return true;
 		}

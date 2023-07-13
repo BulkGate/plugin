@@ -32,7 +32,7 @@ class DispatcherTest extends TestCase
 			Assert::match('~^asynchronous:[\w_-]+~', $key);
 
 			return true;
-		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => []], ['type' => 'json'])->once();
+		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => ['contact_synchronize' => 'all']], ['type' => 'json'])->once();
 
 		$dispatcher->dispatch('order', 'new', $variables);
 
@@ -53,7 +53,7 @@ class DispatcherTest extends TestCase
 			Assert::match('~^asynchronous:[\w_-]+~', $key);
 
 			return true;
-		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => []], ['type' => 'json'])->once();
+		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => ['contact_synchronize' => 'all']], ['type' => 'json'])->once();
 
 		$dispatcher->dispatch('order', 'new', $variables);
 
@@ -69,7 +69,7 @@ class DispatcherTest extends TestCase
 		$loader->shouldReceive('load')->with($variables, [])->once();
 		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('all');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
-		$hook->shouldReceive('dispatch')->with('order', 'new', [])->once();
+		$hook->shouldReceive('dispatch')->with('order', 'new', ['contact_synchronize' => 'all'])->once();
 
 		$dispatcher->dispatch('order', 'new', $variables);
 
@@ -83,11 +83,11 @@ class DispatcherTest extends TestCase
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
 		$loader->shouldReceive('load')->with($variables, ['ok'])->once();
-		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
+		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('message');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturn('1');
 		$settings->shouldReceive('load')->with('admin_sms-default-0:order_new')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
-		$hook->shouldReceive('dispatch')->with('order', 'new', [])->once();
+		$hook->shouldReceive('dispatch')->with('order', 'new', ['contact_synchronize' => 'message'])->once();
 
 		$dispatcher->dispatch('order', 'new', $variables, ['ok']);
 
@@ -103,12 +103,12 @@ class DispatcherTest extends TestCase
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
 		$loader->shouldReceive('load')->with($variables, [])->once();
-		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
+		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('off');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturn('1');
 		$settings->shouldReceive('load')->with('admin_sms-default-0:order_status_change_delivered')->once()->andReturnNull();
 		$settings->shouldReceive('load')->with('customer_sms-cs-0:order_status_change_delivered')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
-		$hook->shouldReceive('dispatch')->with('order', 'status_change', ['lang_id' => 'cs', 'order_status_id' => 'delivered'])->once();
+		$hook->shouldReceive('dispatch')->with('order', 'status_change', ['lang_id' => 'cs', 'order_status_id' => 'delivered', 'contact_synchronize' => 'off'])->once();
 
 		$dispatcher->dispatch('order', 'status_change', $variables);
 
@@ -124,12 +124,12 @@ class DispatcherTest extends TestCase
 
 		$dispatcher = new Dispatcher($settings = Mockery::mock(Settings::class), $hook = Mockery::mock(Hook::class), $loader = Mockery::mock(Loader::class));
 		$loader->shouldReceive('load')->with($variables, [])->once();
-		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('specific');
+		$settings->shouldReceive('load')->with('main:synchronize')->once()->andReturn('message');
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$settings->shouldReceive('load')->with('main:language_mutation')->once()->andReturnNull();
 		$settings->shouldReceive('load')->with('admin_sms-default-0:return_status_change_pending')->once()->andReturnNull();
 		$settings->shouldReceive('load')->with('customer_sms-default-0:return_status_change_pending')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
-		$hook->shouldReceive('dispatch')->with('return', 'status_change', ['lang_id' => 'cs', 'return_status_id' => 'pending'])->once();
+		$hook->shouldReceive('dispatch')->with('return', 'status_change', ['lang_id' => 'cs', 'return_status_id' => 'pending', 'contact_synchronize' => 'message'])->once();
 
 		$dispatcher->dispatch('return', 'status_change', $variables);
 
