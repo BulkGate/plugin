@@ -84,6 +84,12 @@ class HelpersTest extends TestCase
 	{
 		Assert::false(Helpers::deserializeValue('0', 'bool'));
 		Assert::true(Helpers::deserializeValue('1', 'bool'));
+		Assert::false(Helpers::deserializeValue('false', 'bool'));
+		Assert::true(Helpers::deserializeValue('true', 'bool'));
+		Assert::false(Helpers::deserializeValue('off', 'bool'));
+		Assert::true(Helpers::deserializeValue('on', 'bool'));
+		Assert::false(Helpers::deserializeValue('NO', 'bool'));
+		Assert::true(Helpers::deserializeValue('YeS', 'bool'));
 		Assert::same(0, Helpers::deserializeValue('0', 'int'));
 		Assert::same(1, Helpers::deserializeValue('1', 'int'));
 		Assert::same('0', Helpers::deserializeValue('0', 'string'));

@@ -9,6 +9,7 @@ namespace BulkGate\Plugin\Settings;
 
 use BulkGate\Plugin\{Strict, Utils\JsonArray};
 use function is_array, is_bool, is_float, is_int, is_scalar, is_string, preg_match, in_array;
+use function strtolower;
 use const PREG_UNMATCHED_AS_NULL;
 
 class Helpers
@@ -102,7 +103,7 @@ class Helpers
 	{
 		if ($type === 'int')
 		{
-			return (int)$value;
+			return (int) $value;
 		}
 		else if (in_array($type, ['string', 'text'], true))
 		{
@@ -110,11 +111,11 @@ class Helpers
 		}
 		else if ($type === 'bool')
 		{
-			return (bool)$value;
+			return in_array(strtolower($value), ['1', 'true', 'on', 'yes'], true);
 		}
 		else if ($type === 'float')
 		{
-			return (float)$value;
+			return (float) $value;
 		}
 		else if (in_array($type, ['array', 'json'], true))
 		{
