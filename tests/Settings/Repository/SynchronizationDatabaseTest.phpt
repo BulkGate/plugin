@@ -22,10 +22,10 @@ class SynchronizationDatabaseTest extends TestCase
 	{
 		$repository = new SynchronizationDatabase($db = Mockery::mock(Database\Connection::class), $io = Mockery::mock(IO\Connection::class));
 		$db->shouldReceive('table')->with('bulkgate_module')->once()->andReturn('wp_bulkgate_module');
-		$db->shouldReceive('execute')->with('SELECT * FROM `wp_bulkgate_module` WHERE `scope` NOT IN (\'static\', \'asynchronous\')')->once()->andReturn([
+		$db->shouldReceive('execute')->with('SELECT * FROM `wp_bulkgate_module` WHERE `scope` NOT IN (\'static\', \'asynchronous\')')->once()->andReturn(new Database\ResultCollection([
 			['scope' => 'server', 'key' => 'k1', 'type' => 'int', 'value' => '1', 'datetime' => 1681236226, 'order' => '1', 'synchronize_flag' => 'none'],
 			['scope' => 'server', 'key' => 'k2', 'type' => 'string', 'value' => 'test', 'datetime' => 1681236226, 'order' => '2', 'synchronize_flag' => 'add'],
-		]);
+		]));
 		$io->shouldReceive('run')->with(Mockery::on(function (IO\Request $request): bool
 		{
 			Assert::same('https://portal.bulkgate.com/api/v1/', $request->url);

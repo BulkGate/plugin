@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\Settings\Test;
 
 use Mockery;
 use Tester\{Assert, Expect, TestCase};
-use BulkGate\Plugin\{Database\Connection, Settings\Repository\Entity\Setting, Settings\Repository\SettingsDatabase};
+use BulkGate\Plugin\{Database\Connection, Database\ResultCollection, Settings\Repository\Entity\Setting, Settings\Repository\SettingsDatabase};
 
 require __DIR__ . '/../../bootstrap.php';
 
@@ -27,10 +27,10 @@ class SettingsDatabaseTest extends TestCase
 			->once()
 			->andReturn($sql = 'SELECT * FROM `prefix_bulkgate_module` WHERE `scope` = \'main\' AND `synchronize_flag` != \'delete\' ORDER BY `order`');
 
-		$connection->shouldReceive('execute')->with($sql)->once()->andReturn([
+		$connection->shouldReceive('execute')->with($sql)->once()->andReturn(new ResultCollection([
 			['scope' => 'main', 'key' => 'one', 'type' => 'string', 'value' => 'v1'],
 			['scope' => 'main', 'key' => 'two', 'type' => 'array', 'value' => '{"value":"v2"}']
-		]);
+		]));
 
 		$list = $repository->load('main')->toArray();
 

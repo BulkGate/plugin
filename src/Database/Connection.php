@@ -13,9 +13,9 @@ interface Connection
 {
 	/**
 	 * @param literal-string $sql
-	 * @return array<array-key, array<array-key, mixed>>|null
+	 * @return ResultCollection|null
 	 */
-	public function execute(string $sql): ?array;
+	public function execute(string $sql): ?ResultCollection;
 
 
 	/**

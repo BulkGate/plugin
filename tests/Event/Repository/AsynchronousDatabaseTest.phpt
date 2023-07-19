@@ -8,6 +8,7 @@ namespace BulkGate\Plugin\Event\Repository\Test;
  */
 
 use BulkGate\Plugin\Database\Connection;
+use BulkGate\Plugin\Database\ResultCollection;
 use BulkGate\Plugin\Event\Repository\AsynchronousDatabase;
 use BulkGate\Plugin\Structure\Collection;
 use Mockery;
@@ -30,10 +31,10 @@ class AsynchronousDatabaseTest extends TestCase
 		$db->shouldReceive('prepare')->andReturnUsing(fn (string $query) => str_replace('%s', '\'ok\'', $query));
 
 		$db->shouldReceive('execute')->with('START TRANSACTION')->once()->ordered();
-		$db->shouldReceive('execute')->with("SELECT * FROM `bulkgate_module` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT 2 FOR UPDATE")->once()->andReturn([
+		$db->shouldReceive('execute')->with("SELECT * FROM `bulkgate_module` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT 2 FOR UPDATE")->once()->andReturn(new ResultCollection([
 			['key' => 'task1', 'value' => '{"category": "test", "endpoint": "endpoint1", "variables": {"key": "value"}}', 'datetime' => '456', 'order' => '0'],
 			['key' => 'task2', 'value' => '{"category": "test", "endpoint": "endpoint2", "variables": {"key2": "value2"}}', 'datetime' => 456, 'order' => 0],
-		])->ordered();
+		]))->ordered();
 		$db->shouldReceive('escape')->with('task1')->once()->ordered()->andReturn('escaped_task1');
 		$db->shouldReceive('escape')->with('task2')->once()->ordered()->andReturn('escaped_task2');
 		$db->shouldReceive('execute')->with("UPDATE `bulkgate_module` SET `order` = -1 WHERE `scope` = 'asynchronous' AND `key` IN ('escaped_task1','escaped_task2')")->once()->ordered();
