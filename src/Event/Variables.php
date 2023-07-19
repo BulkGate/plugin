@@ -101,4 +101,46 @@ class Variables implements ArrayAccess, Countable, IteratorAggregate
 	{
 		return count($this->variables);
 	}
+
+
+	/**
+	 * @deprecated use offsetGet()
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function get(string $key, $default = null)
+	{
+		return $this->variables[$key] ?? $default;
+	}
+
+
+	/**
+	 * @deprecated use offsetSet()
+	 * @param mixed $value
+	 * @param mixed $alternative
+	 */
+	public function set(string $key, $value, $alternative = '', bool $rewrite = true): self
+	{
+		if (!isset($this->variables[$key]) || $rewrite)
+		{
+			if (is_scalar($value) && strlen(trim((string) $value)) > 0)
+			{
+				$this->variables[$key] = $value;
+			}
+
+			if (!isset($this->variables[$key]))
+			{
+				if (is_scalar($alternative) && strlen(trim((string) $alternative)) > 0)
+				{
+					$this->variables[$key] = (string) $alternative;
+				}
+				else
+				{
+					$this->variables[$key] = '';
+				}
+			}
+		}
+
+		return $this;
+	}
 }
