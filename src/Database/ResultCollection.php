@@ -39,7 +39,7 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * @var array<array-key, Result>
 	 */
-	protected array $list;
+	protected array $list = [];
 
 
 	/**
