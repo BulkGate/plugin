@@ -8,7 +8,6 @@
 namespace BulkGate\Extensions\Hook;
 
 use BulkGate\Plugin\Event\Variables as PluginVariables;
-use function class_exists, class_alias;
 
 /**
  * @phpstan-ignore-next-line
@@ -22,9 +21,3 @@ if (false)
 	{
 	}
 }
-else if (!class_exists(Variables::class))
-{
-	class_alias(PluginVariables::class, Variables::class);
-}
-
-

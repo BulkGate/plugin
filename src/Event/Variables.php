@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\Event;
 
 use BulkGate\Plugin\Strict;
 use ArrayAccess, Countable, IteratorAggregate, ArrayIterator;
-use function array_key_exists, is_scalar, is_string, trim;
+use function array_key_exists, is_scalar, is_string, trim, class_alias;
 
 /**
  * @implements ArrayAccess<string, scalar|null>
@@ -144,3 +144,5 @@ class Variables implements ArrayAccess, Countable, IteratorAggregate
 		return $this;
 	}
 }
+
+class_alias(Variables::class, '\BulkGate\Extensions\Hook\Variables');
