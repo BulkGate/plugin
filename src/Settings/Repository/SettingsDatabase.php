@@ -29,7 +29,7 @@ class SettingsDatabase implements Settings
 
 		foreach ($result ?? [] as $row)
 		{
-			$entity = new Entity\Setting($row);
+			$entity = new Entity\Setting($row->toArray());
 
 			$collection[$entity->key] = $entity;
 		}

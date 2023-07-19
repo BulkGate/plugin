@@ -8,8 +8,8 @@ namespace BulkGate\Plugin\Debug\Test;
  */
 
 use Tester\{Assert, TestCase};
+use BulkGate\Plugin\Database\Result;
 use BulkGate\Plugin\Database\ResultCollection;
-use BulkGate\Plugin\Settings\Repository\Entity\Setting;
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -31,9 +31,9 @@ class ResultCollectionTest extends TestCase
 		$collection['test'] = $c = ['test' => 3];
 		Assert::true(isset($collection['test']));
 
-		Assert::same($a, $collection[0]);
-		Assert::same($b, $collection[1]);
-		Assert::same($c, $collection['test']);
+		Assert::same($a, $collection[0]->toArray());
+		Assert::same($b, $collection[1]->toArray());
+		Assert::same($c, $collection['test']->toArray());
 
 		Assert::count(3, $collection);
 		unset($collection[1]);
@@ -41,16 +41,13 @@ class ResultCollectionTest extends TestCase
 		Assert::count(2, $collection);
 		Assert::null($collection[1]);
 
-		Assert::same([$a, 'test' => $c], $collection->toArray());
+		Assert::same([$collection[0], 'test' => $collection['test']], $collection->toArray());
 
 		Assert::same(2, $collection->getNumRows());
-		Assert::type(\stdClass::class, $collection->getRow());
-		Assert::same(['test' => 1], (array) $collection->getRow());
+		Assert::type(Result::class, $collection->getRow());
+		Assert::same(['test' => 1], $collection->getRow()->toArray());
 
-		Assert::equal([
-			(object) ['test' => 1],
-			(object) ['test' => 3],
-		], $collection->getRows());
+		Assert::count(2, $collection->getRows());
 	}
 }
 

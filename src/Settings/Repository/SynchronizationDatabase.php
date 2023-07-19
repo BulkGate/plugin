@@ -31,7 +31,7 @@ class SynchronizationDatabase implements Synchronization
 
 		foreach ($result ?? [] as $row)
 		{
-			$entity = new Entity\Setting($row);
+			$entity = new Entity\Setting($row->toArray());
 
 			$collection["$entity->scope:$entity->key"] = $entity;
 		}

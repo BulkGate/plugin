@@ -7,17 +7,36 @@ namespace BulkGate\Plugin\Structure;
  * @link https://www.bulkgate.com/
  */
 
-use ArrayAccess, Countable, IteratorAggregate, ArrayIterator;
-use function array_key_exists, count;
+use Countable, IteratorAggregate;
+use function array_key_exists;
 
 /**
  * @template TKey of array-key
  * @template TValue of Entity
- * @implements ArrayAccess<TKey, TValue>
+ * @implements \ArrayAccess<TKey, TValue>
  * @implements IteratorAggregate<TKey, TValue>
  */
-class Collection implements ArrayAccess, Countable, IteratorAggregate
+class Collection implements \ArrayAccess, Countable, IteratorAggregate
 {
+	use ArrayCountable;
+
+	/**
+	 * @use ArrayCast<TKey, TValue>
+	 */
+	use ArrayCast;
+
+	/**
+	 * @use ArrayIterable<TKey, TValue>
+	 */
+	use ArrayIterable;
+
+	/**
+	 * @use ArrayAccess<TKey, TValue>
+	 */
+	use ArrayAccess {
+		offsetSet as private offsetSetPublic;
+	}
+
 	/**
 	 * @var class-string<TValue>
 	 */
@@ -26,7 +45,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * @var array<array-key, TValue>
 	 */
-	private array $list;
+	protected array $list;
 
 	/**
 	 * @param class-string<TValue> $type
@@ -40,25 +59,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 
 
 	/**
-	 * @param array-key $offset
-	 */
-	public function offsetExists($offset): bool
-	{
-		return array_key_exists($offset, $this->list);
-	}
-
-
-	/**
-	 * @param TKey $offset
-	 * @return TValue|null
-	 */
-	public function offsetGet($offset): ?Entity
-	{
-		return $this->list[$offset] ?? null;
-	}
-
-
-	/**
 	 * @param TKey|null $offset
 	 * @param TValue $value
 	 */
@@ -66,47 +66,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	{
 		if ($value instanceof $this->type)
 		{
-			if ($offset === null)
-			{
-				$this->list[] = $value;
-			}
-			else
-			{
-				$this->list[$offset] = $value;
-			}
+			$this->offsetSetPublic($offset, $value);
 		}
-	}
-
-
-	/**
-	 * @param TKey $offset
-	 */
-	public function offsetUnset($offset): void
-	{
-		unset($this->list[$offset]);
-	}
-
-
-	/**
-	 * @return ArrayIterator<TKey, TValue>
-	 */
-	public function getIterator(): ArrayIterator
-	{
-		return new ArrayIterator($this->list);
-	}
-
-
-	public function count(): int
-	{
-		return count($this->list);
-	}
-
-
-	/**
-	 * @return  array<array-key, TValue>
-	 */
-	public function toArray(): array
-	{
-		return $this->list;
 	}
 }

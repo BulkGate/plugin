@@ -38,7 +38,7 @@ class AsynchronousDatabase implements Asynchronous
 			{
 				$keys[] = $this->db->escape($record['key']);
 
-				$collection[] = new Entity\Task($record);
+				$collection[] = new Entity\Task($record->toArray());
 			}
 
 			if ($keys !== [])

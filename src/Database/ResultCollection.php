@@ -7,19 +7,39 @@ namespace BulkGate\Plugin\Database;
  * @link https://www.bulkgate.com/
  */
 
-use ArrayAccess, ArrayIterator, Countable, IteratorAggregate;
-use function array_key_exists, count, is_array, class_alias;
+use BulkGate\Plugin\Structure;
+use ArrayAccess, Countable, IteratorAggregate;
+use function is_array, class_alias;
 
 /**
- * @implements ArrayAccess<array-key, array<array-key, mixed>>
- * @implements IteratorAggregate<array-key, array<array-key, mixed>>
+ * @implements ArrayAccess<array-key, Result>
+ * @implements IteratorAggregate<array-key, Result>
  */
 class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 {
+	use Structure\ArrayCountable;
+
 	/**
-	 * @var array<array-key, array<array-key, mixed>>
+	 * @use Structure\ArrayIterable<array-key, Result>
 	 */
-	private array $list;
+	use Structure\ArrayIterable;
+
+	/**
+	 * @use Structure\ArrayCast<array-key, Result>
+	 */
+	use Structure\ArrayCast;
+
+	/**
+	 * @use Structure\ArrayAccess<array-key, Result>
+	 */
+	use Structure\ArrayAccess {
+		offsetSet as private offsetSetPublic;
+	}
+
+	/**
+	 * @var array<array-key, Result>
+	 */
+	protected array $list;
 
 
 	/**
@@ -27,80 +47,27 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	 */
 	public function __construct(array $list = [])
 	{
-		$this->list = $list;
-	}
-
-
-	/**
-	 * @return ArrayIterator<array-key, array<array-key, mixed>>
-	 */
-	public function getIterator(): ArrayIterator
-	{
-		return new ArrayIterator($this->list);
-	}
-
-
-	/**
-	 * @param array-key $offset
-	 * @return bool
-	 */
-	public function offsetExists($offset): bool
-	{
-		return array_key_exists($offset, $this->list);
-	}
-
-	/**
-	 * @param array-key $offset
-	 * @return array<array-key, mixed>|null
-	 */
-	public function offsetGet($offset): ?array
-	{
-		return $this->list[$offset] ?? null;
-	}
-
-
-	/**
-	 * @param array-key|null $offset
-	 * @param array<array-key, mixed> $value
-	 */
-	public function offsetSet($offset, $value): void
-	{
-		if (is_array($value))
+		foreach ($list as $key => $value) if (is_array($value))
 		{
-			if ($offset === null)
-			{
-				$this->list[] = $value;
-			}
-			else
-			{
-				$this->list[$offset] = $value;
-			}
+			$this[$key] = $value;
 		}
 	}
 
 
 	/**
-	 * @param array-key $offset
+	 * @param array-key|null $offset
+	 * @param array<array-key, mixed>|Result $value
 	 */
-	public function offsetUnset($offset): void
+	public function offsetSet($offset, $value): void
 	{
-		unset($this->list[$offset]);
+		if (is_array($value))
+		{
+			$value = new Result($value);
+		}
+
+		$this->offsetSetPublic($offset, $value);
 	}
 
-
-	public function count(): int
-	{
-		return count($this->list);
-	}
-
-
-	/**
-	 * @return array<array-key, array<array-key, mixed>>
-	 */
-	public function toArray(): array
-	{
-		return $this->list;
-	}
 
 	// BC
 
@@ -109,7 +76,7 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	 */
 	public function getNumRows(): int
 	{
-		return $this->count();
+		return count($this);
 	}
 
 
@@ -120,7 +87,7 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	{
 		$key = array_key_first($this->list);
 
-		return $key !== null ? (object) $this->list[$key] : null;
+		return $key !== null ? $this->list[$key] : null;
 	}
 
 
@@ -130,14 +97,7 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	 */
 	public function getRows(): array
 	{
-		$rows = [];
-
-		foreach ($this->list as $row)
-		{
-			$rows[] = (object) $row;
-		}
-
-		return $rows;
+		return $this->list;
 	}
 }
 
