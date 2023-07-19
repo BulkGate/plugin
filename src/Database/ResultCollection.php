@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\Database;
  */
 
 use ArrayAccess, ArrayIterator, Countable, IteratorAggregate;
-use function array_key_exists, count, is_array;
+use function array_key_exists, count, is_array, class_alias;
 
 /**
  * @implements ArrayAccess<array-key, array<array-key, mixed>>
@@ -92,4 +92,53 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 	{
 		return count($this->list);
 	}
+
+
+	/**
+	 * @return array<array-key, array<array-key, mixed>>
+	 */
+	public function toArray(): array
+	{
+		return $this->list;
+	}
+
+	// BC
+
+	/**
+	 * @deprecated use count()
+	 */
+	public function getNumRows(): int
+	{
+		return $this->count();
+	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function getRow(): ?object
+	{
+		$key = array_key_first($this->list);
+
+		return $key !== null ? (object) $this->list[$key] : null;
+	}
+
+
+	/**
+	 * @deprecated
+	 * @return array<array-key, object>
+	 */
+	public function getRows(): array
+	{
+		$rows = [];
+
+		foreach ($this->list as $row)
+		{
+			$rows[] = (object) $row;
+		}
+
+		return $rows;
+	}
 }
+
+class_alias(ResultCollection::class, 'BulkGate\Extensions\Database\Result');
