@@ -79,6 +79,34 @@ class VariablesTest extends TestCase
 
 		Assert::same(['test1' => 'test', 'test2' => '', 'test3' => 'ok', 'test4' => null, 'test5' => 'ok'], $variables->toArray());
 	}
+
+
+	public function testDeprecated(): void
+	{
+		$v1 = new \BulkGate\Extensions\Hook\Variables([]);
+
+		$v1->set('test1', 'ok');
+
+		Assert::same(['test1' => 'ok'], $v1->toArray());
+
+		$v1->set('test1', 'fail', '', false);
+		$v1->set('test2', 'ok', '', false);
+		$v1->set('test3', null, 'test', false);
+		Assert::same($v1, $v1->set('test4', null, null, false));
+
+		Assert::same(['test1' => 'ok', 'test2' => 'ok', 'test3' => 'test', 'test4' => ''], $v1->toArray());
+
+		(function (\BulkGate\Extensions\Hook\Variables $variables): void
+		{
+			$variables->set('test2', 'ok');
+		})($v2 = new Variables());
+
+		Assert::same(['test2' => 'ok'], $v2->toArray());
+
+		Assert::null($v2->get('test1'));
+		Assert::same('ok', $v2->get('test2'));
+		Assert::same('ok-default', $v2->get('test3', 'ok-default'));
+	}
 }
 
 (new VariablesTest())->run();
