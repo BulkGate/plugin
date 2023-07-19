@@ -7,6 +7,8 @@ namespace BulkGate\Plugin\Database;
  * @link https://www.bulkgate.com/
  */
 
+use function class_alias;
+
 interface Connection
 {
 	/**
@@ -54,3 +56,5 @@ interface Connection
 	 */
 	public function table(string $table): string;
 }
+
+class_alias(Connection::class, 'BulkGate\Extensions\Database\IDatabase');

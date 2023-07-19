@@ -21,3 +21,20 @@ if (false)
 	{
 	}
 }
+
+namespace BulkGate\Extensions\Database;
+
+use BulkGate\Plugin\Database\Connection;
+
+/**
+ * @phpstan-ignore-next-line
+ */
+if (false)
+{
+	/**
+	 * @deprecated use BulkGate\Plugin\Database\Connection
+	 */
+	interface IDatabase extends Connection
+	{
+	}
+}
