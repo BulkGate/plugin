@@ -35,7 +35,13 @@ class DispatcherTest extends TestCase
 			return true;
 		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => ['contact_synchronize' => 'all', 'contact_address_preference' => 'invoice']], ['type' => 'json'])->once();
 
-		$dispatcher->dispatch('order', 'new', $variables);
+		$test = false;
+		$dispatcher->dispatch('order', 'new', $variables, [], function () use (&$test): void
+		{
+			$test = true;
+		});
+
+		Assert::true($test);
 
 		Mockery::close();
 	}
