@@ -28,6 +28,10 @@ class JsonTest extends TestCase
 		Assert::same('"1"', Json::encode('1'));
 		Assert::same('""', Json::encode(''));
 		Assert::exception(fn () => Json::encode("\xECQ"), JsonException::class);
+		Assert::same('["اللُّغَة الْعَرَبِيَّة"]', Json::encode(['اللُّغَة الْعَرَبِيَّة']));
+		Assert::same('[" \u0627\u0644\u0644\u064f\u0651\u063a\u064e\u0629 \u0627\u0644\u0652\u0639\u064e\u0631\u064e\u0628\u0650\u064a\u064e\u0651\u0629\u200e"]', Json::encode([' اللُّغَة الْعَرَبِيَّة‎'], false, true));
+		Assert::same('[" اللُّغَة الْعَرَبِيَّة‎"]', Json::encode([' اللُّغَة الْعَرَبِيَّة‎']));
+		//Assert::same([], Json::encode("\xECQ", false, true));
 	}
 
 
@@ -42,6 +46,9 @@ class JsonTest extends TestCase
 		Assert::same('1', Json::decode('"1"'));
 		Assert::same('', Json::decode('""'));
 		Assert::exception(fn () => Json::decode("\xECQ"), JsonException::class);
+		Assert::same(['اللُّغَة الْعَرَبِيَّة'], Json::decode('["اللُّغَة الْعَرَبِيَّة"]'));
+		Assert::same(['اللُّغَة الْعَرَبِيَّة'], Json::decode('["\u0627\u0644\u0644\u064f\u0651\u063a\u064e\u0629 \u0627\u0644\u0652\u0639\u064e\u0631\u064e\u0628\u0650\u064a\u064e\u0651\u0629"]'));
+		Assert::same([' اللُّغَة الْعَرَبِيَّة‎'], Json::decode('[" اللُّغَة الْعَرَبِيَّة‎"]'));
 	}
 }
 

@@ -23,7 +23,7 @@
         "phpstan/phpstan": "^1.9",
         "nette/tester": "^2",
         "mockery/mockery": "1.4.2",
-        "tracy/tracy": "^2.10",
+        "tracy/tracy": "^2.9",
         "rector/rector": "^0.16"
     },
     "scripts": {

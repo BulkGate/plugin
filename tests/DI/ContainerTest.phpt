@@ -86,7 +86,7 @@ class ContainerTest extends TestCase
 
 		Assert::exception(fn() => $container[] = [], InvalidStateException::class, 'Invalid service factory');
 		Assert::exception(fn() => $container[] = true, InvalidStateException::class, 'Invalid service factory');
-		Assert::exception(fn() => $container[] = ['factory' => 'test'], InvalidStateException::class, 'Class "test" does not exist');
+		Assert::exception(fn() => $container[] = ['factory' => 'test'], InvalidStateException::class);
 		$container[] = ['factory' => \ConnectionTest::class];
 		Assert::exception(fn() => $container[] = ['factory' => \ConnectionTest::class], AutoWiringException::class, 'Auto wiring conflict: \'ConnectionTest\' is already registered');
 

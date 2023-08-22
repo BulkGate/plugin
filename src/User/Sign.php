@@ -8,6 +8,7 @@ namespace BulkGate\Plugin\User;
  */
 
 use BulkGate\{Plugin\AuthenticateException, Plugin\Debug\Logger, Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
+use function array_merge;
 
 class Sign
 {
@@ -34,7 +35,10 @@ class Sign
 	}
 
 
-	public function authenticate(bool $reload = false): ?string
+	/**
+	 * @param array<string, mixed> $parameters
+	 */
+	public function authenticate(bool $reload = false, array $parameters = []): ?string
 	{
 		$token = $this->settings->load('static:application_token', $reload);
 
@@ -44,10 +48,9 @@ class Sign
 			'application_product' => $this->configuration->product(),
 			'application_language' => $this->settings->load('main:language') ?? 'en',
 			'application_version' => $this->configuration->version(),
-			'application_parameters' => [
+			'application_parameters' => array_merge([
 				'guest' => $token === null,
-				'expire' => time() + 300
-			],
+			], $parameters),
 		], $token ?? '');
 	}
 

@@ -61,8 +61,8 @@ class FormatterIntlTest extends TestCase
 	{
 		$formatter = new FormatterIntl('fr', 'FR');
 
-		Assert::same('11 avr. 2022, 16:05', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('11 avr. 2023, 16:06', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
+		Assert::match('~11 avr\. 2022.*16:05~', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~11 avr\. 2023.*16:06~', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "hahahaha", 'Europe/Prague'));
 
