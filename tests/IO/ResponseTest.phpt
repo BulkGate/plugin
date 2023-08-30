@@ -30,7 +30,6 @@ class ResponseTest extends TestCase
 		$request = new Response('{"data": {"status":"ok","reducer":{"scope":{"name":"John"},"server":{}}}}', 'application/json');
 
 		Assert::same(['data' => ['status' => 'ok', 'reducer' => ['scope' => ['name' => 'John'], 'server' => []]]], $request->data);
-		Assert::same('John', $request->get('reducer:scope:name'));
 	}
 
 

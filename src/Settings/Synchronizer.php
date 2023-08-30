@@ -8,6 +8,7 @@ namespace BulkGate\Plugin\Settings;
  */
 
 use BulkGate\Plugin\{Debug\Logger, Eshop\Configuration, IO\Url, Strict, AuthenticateException, InvalidResponseException};
+use function time;
 
 class Synchronizer
 {
@@ -39,11 +40,11 @@ class Synchronizer
 		{
 			$this->checkUpdate();
 
-			if ($immediately || ($this->settings->load('static:synchronize') ?? 0) < time() && ($this->settings->load('static:application_id') ?? false))
+			if (($immediately || ($this->settings->load('static:synchronize') ?? 0) < time()) && ($this->settings->load('static:application_id') ?? false))
 			{
 				$plugin_settings = $this->repository->loadPluginSettings();
 
-				$server_settings = $this->repository->loadServerSettings($this->url->get('module/settings/synchronize'), $plugin_settings, 6);
+				$server_settings = $this->repository->loadServerSettings($this->url->get('api/1.0/eshop/synchronize/run'), $plugin_settings, 6);
 
 				foreach ($server_settings as $server_setting)
 				{

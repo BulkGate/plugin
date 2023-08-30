@@ -42,11 +42,11 @@ class SynchronizationDatabase implements Synchronization
 
 	public function loadServerSettings(string $url, Structure\Collection $plugin_settings, int $timeout = 20): Structure\Collection
 	{
-		$result = $this->io->run(new IO\Request($url, ['__synchronize' => array_values($plugin_settings->toArray())], 'application/json', $timeout));
+		$result = $this->io->run(new IO\Request($url, ['synchronize' => array_values($plugin_settings->toArray())], 'application/json', $timeout));
 
 		$collection = new Structure\Collection(Entity\Setting::class);
 
-		$list = $result->get(':synchronize:');
+		$list = $result->data['data'] ?? null;
 
 		if (is_array($list))
 		{

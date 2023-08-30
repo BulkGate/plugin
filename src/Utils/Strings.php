@@ -16,7 +16,7 @@ class Strings
 
 	public static function length(string $s, string $encoding = 'UTF-8'): int
 	{
-		return extension_loaded('mbstring') ? mb_strlen($s, $encoding) : self::strlenPolyfill($s);
+		return extension_loaded('mbstring') ? (int) mb_strlen($s, $encoding) : self::strlenPolyfill($s);
 	}
 
 

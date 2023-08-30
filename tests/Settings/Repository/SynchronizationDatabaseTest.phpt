@@ -31,21 +31,19 @@ class SynchronizationDatabaseTest extends TestCase
 			Assert::same('https://portal.bulkgate.com/api/v1/', $request->url);
 			Assert::same('application/json', $request->content_type);
 			Assert::same(30, $request->timeout);
-			Assert::same('{"__synchronize":[{"scope":"server","key":"k1","type":"int","value":1,"datetime":1681236226,"order":1,"synchronize_flag":"none"},{"scope":"server","key":"k2","type":"string","value":"test","datetime":1681236226,"order":2,"synchronize_flag":"add"}]}', $request->serialize());
+			Assert::same('{"synchronize":[{"scope":"server","key":"k1","type":"int","value":1,"datetime":1681236226,"order":1,"synchronize_flag":"none"},{"scope":"server","key":"k2","type":"string","value":"test","datetime":1681236226,"order":2,"synchronize_flag":"add"}]}', $request->serialize());
 
 			return true;
 		}))->once()->andReturn(new IO\Response('{
 			"data": {
-				"_generic": {
-					"synchronize": [{
-						"scope": "server",
-						"key": "k1",
-						"type": "int",
-						"value": "1",
-						"datetime": 1681236227,
-						"order": 1,
-						"synchronize_flag": "add"
-					}]
+				"xxx": {
+					"scope": "server",
+					"key": "k1",
+					"type": "int",
+					"value": "1",
+					"datetime": 1681236227,
+					"order": 1,
+					"synchronize_flag": "add"
 				}
 			}
 		}', 'application/json'));

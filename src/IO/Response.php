@@ -80,13 +80,4 @@ class Response
 			}
 		}
 	}
-
-
-	/**
-	 * @return mixed
-	 */
-	public function get(string $key)
-	{
-		return Helpers::reduceStructure($this->data['data'] ?? [], $key);
-	}
 }

@@ -26,7 +26,7 @@ class SynchronizerTest extends TestCase
 			'main:key1' => new Setting(['scope' => 'main', 'key' => 'key1', 'value' => 'value1', 'datetime' => 150]),
 			'main:key2' => new Setting(['scope' => 'main', 'key' => 'key2', 'value' => 'value2', 'datetime' => 150]),
 		]));
-		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andReturn(new Collection(Setting::class, [
+		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/api/1.0/eshop/synchronize/run', $plugin, 6)->once()->andReturn(new Collection(Setting::class, [
 			new Setting(['scope' => 'main', 'key' => 'key1', 'value' => 'value1', 'datetime' => 50]),
 			new Setting(['scope' => 'main', 'key' => 'key2', 'value' => 'value10', 'datetime' => 200]),
 			new Setting(['scope' => 'main', 'key' => 'key3', 'value' => 'value3', 'datetime' => 300]),
@@ -56,10 +56,11 @@ class SynchronizerTest extends TestCase
 		]));
 		$settings->shouldReceive('load')->with('static:version')->twice()->andReturn('1.0.0');
 		$configuration->shouldReceive('version')->withNoArgs()->times(4)->andReturn('2.0.0');
+		$settings->shouldReceive('load')->with('static:application_id')->twice()->andReturn(451);
 		$settings->shouldReceive('install')->with(true)->twice();
 		$settings->shouldReceive('set')->with('static:version', '2.0.0', ['type' => 'string'])->twice();
-		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(AuthenticateException::class, 'authenticate');
-		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/module/settings/synchronize', $plugin, 6)->once()->andThrow(InvalidResponseException::class, 'invalid response');
+		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/api/1.0/eshop/synchronize/run', $plugin, 6)->once()->andThrow(AuthenticateException::class, 'authenticate');
+		$repository->shouldReceive('loadServerSettings')->with('https://portal.bulkgate.com/api/1.0/eshop/synchronize/run', $plugin, 6)->once()->andThrow(InvalidResponseException::class, 'invalid response');
 		$settings->shouldReceive('delete')->with('static:application_token')->once();
 		$logger->shouldReceive('log')->with('Synchronization Error: invalid response')->once();
 		$synchronizer->synchronize(true);
