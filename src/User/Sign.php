@@ -7,7 +7,7 @@ namespace BulkGate\Plugin\User;
  * @link https://www.bulkgate.com/
  */
 
-use BulkGate\{Plugin\AuthenticateException, Plugin\Debug\Logger, Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
+use BulkGate\{Plugin\AuthenticateException, Plugin\Debug\Logger, Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Localization\Language, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
 use function array_merge;
 
 class Sign
@@ -22,15 +22,18 @@ class Sign
 
     private Configuration $configuration;
 
+	private Language $language;
+
 	private Logger $logger;
 
 
-	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration, Logger $logger)
+	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration, Language $language, Logger $logger)
 	{
 		$this->settings = $settings;
 		$this->connection = $connection;
 		$this->url = $url;
 		$this->configuration = $configuration;
+		$this->language = $language;
 		$this->logger = $logger;
 	}
 
@@ -46,7 +49,7 @@ class Sign
 			'application_id' => $this->settings->load('static:application_id'),
 			'application_installation' => $this->configuration->url(),
 			'application_product' => $this->configuration->product(),
-			'application_language' => $this->settings->load('main:language') ?? 'en',
+			'application_language' => $this->language->get(),
 			'application_version' => $this->configuration->version(),
 			'application_parameters' => array_merge([
 				'guest' => $token === null,
