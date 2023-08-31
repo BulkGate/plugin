@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\Localization\Test;
 
 use Tester\{Assert, TestCase};
 use Mockery;
-use BulkGate\Plugin\{Settings\Repository\Entity\Setting, Settings\Settings, Localization\TranslatorSettings};
+use BulkGate\Plugin\{Localization\Language, Settings\Repository\Entity\Setting, Settings\Settings, Localization\TranslatorSettings};
 use function PHPStan\dumpType;
 
 require __DIR__ . '/../bootstrap.php';
@@ -21,12 +21,14 @@ class TranslatorSettingsTest extends TestCase
 {
 	public function testBase(): void
 	{
-		$translator = new TranslatorSettings($settings = Mockery::mock(Settings::class));
-		$settings->shouldReceive('load')->with('main:language')->once()->andReturn('cs');
+		$translator = new TranslatorSettings($settings = Mockery::mock(Settings::class), $language = Mockery::mock(Language::class));
+		$language->shouldReceive('get')->withNoArgs()->once()->andReturn('cs');
 		$settings->shouldReceive('load')->with('translates:cs')->once()->andReturn(['name' => 'jméno', 'age' => 'věk']);
-		$settings->shouldReceive('set')->with('main:language', 'fr', ['type' => 'string'])->once();
+		$language->shouldReceive('set')->with('fr')->once();
+		$language->shouldReceive('get')->withNoArgs()->once()->andReturn('fr');
 		$settings->shouldReceive('load')->with('translates:fr')->once()->andReturn(['name' => 'nom', 'age' => 'âge']);
-		$settings->shouldReceive('set')->with('main:language', 'sk', ['type' => 'string'])->once();
+		$language->shouldReceive('set')->with('sk')->once();
+		$language->shouldReceive('get')->withNoArgs()->once()->andReturn('sk');
 		$settings->shouldReceive('load')->with('translates:sk')->once()->andReturn('translates');
 
 		Assert::same('jméno', $translator->translate('name'));
@@ -55,8 +57,8 @@ class TranslatorSettingsTest extends TestCase
 
 	public function testDefaultLanguage(): void
 	{
-		$translator = new TranslatorSettings($settings = Mockery::mock(Settings::class));
-		$settings->shouldReceive('load')->with('main:language')->once()->andReturnNull();
+		$translator = new TranslatorSettings($settings = Mockery::mock(Settings::class), $language = Mockery::mock(Language::class));
+		$language->shouldReceive('get')->withNoArgs()->once()->andReturn('en');
 		$settings->shouldReceive('load')->with('translates:en')->once()->andReturn(['name' => 'OK']);
 
 		Assert::same('en', $translator->getIso());

@@ -16,6 +16,8 @@ class TranslatorSettings implements Translator
 
 	private Settings $settings;
 
+	private Language $language;
+
 	private ?string $iso = null;
 
 	/**
@@ -23,9 +25,10 @@ class TranslatorSettings implements Translator
 	 */
 	private array $translates;
 
-	public function __construct(Settings $settings)
+	public function __construct(Settings $settings, Language $language)
 	{
 		$this->settings = $settings;
+		$this->language = $language;
 	}
 
 
@@ -39,13 +42,13 @@ class TranslatorSettings implements Translator
 
 	public function getIso(): string
 	{
-		return $this->iso ?? 'en';
+		return $this->iso ?? $this->language->get();
 	}
 
 
 	public function setIso(string $iso): void
 	{
-		$this->settings->set('main:language', $iso, ['type' => 'string']);
+		$this->language->set($iso);
 
 		$this->init($iso);
 	}
@@ -53,11 +56,11 @@ class TranslatorSettings implements Translator
 
 	private function init(?string $iso = null): void
 	{
-		if (($iso !== null && $this->iso !== $iso) || !isset($this->translates))
+		if (($iso !== null && $this->getIso() !== $iso) || !isset($this->translates))
 		{
-			$iso ??= $this->settings->load('main:language') ?? 'en';
+			$iso ??= $this->language->get();
 
-			$this->iso = is_string($iso) ? $iso : 'en';
+			$this->iso = $iso;
 
 			$translates = $this->settings->load("translates:$this->iso");
 
