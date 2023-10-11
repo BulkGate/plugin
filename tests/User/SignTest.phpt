@@ -14,6 +14,9 @@ use function json_encode;
 
 require_once __DIR__ . '/../bootstrap.php';
 
+/**
+ * @testCase
+ */
 class SignTest extends TestCase
 {
 	public function testAuthenticate(): void
