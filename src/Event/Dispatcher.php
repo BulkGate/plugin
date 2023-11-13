@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\Event;
  */
 
 use BulkGate\Plugin\{Strict, Settings\Settings};
-use function array_key_exists, in_array, str_replace, uniqid, preg_replace;
+use function array_key_exists, in_array, str_replace, uniqid, preg_replace, is_array;
 
 class Dispatcher
 {
@@ -25,13 +25,14 @@ class Dispatcher
 
 	private Loader $loader;
 
+	public static string $default_dispatcher = self::Direct;
+
 	public function __construct(Settings $settings, Hook $hook, Loader $loader)
 	{
 		$this->settings = $settings;
 		$this->hook = $hook;
 		$this->loader = $loader;
 	}
-
 
 	/**
 	 * @param array<array-key, mixed> $parameters
@@ -42,7 +43,7 @@ class Dispatcher
 
 		if ($this->check($category, $endpoint, $variables))
 		{
-			if (in_array($this->settings->load('main:dispatcher') ?? self::Direct, [self::Cron, self::Asset], true))
+			if (in_array($this->settings->load('main:dispatcher') ?? self::$default_dispatcher, [self::Cron, self::Asset], true))
 			{
 				$id = preg_replace('~[^0-9a-zA-Z]~', '-', uniqid('', true));
 
