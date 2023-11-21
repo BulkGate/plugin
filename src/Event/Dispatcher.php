@@ -71,7 +71,7 @@ class Dispatcher
 		else
 		{
 			$language = $variables['lang_id'] ?? 'en';
-			$store_id = $variables['store_id'] ?? 0;
+			$shop_id = $variables['shop_id'] ?? 0;
 			$category = str_replace('-', '_', $category);
 
 			if (!in_array($this->settings->load('main:language_mutation'), [1, true, '1'], true))
@@ -79,7 +79,7 @@ class Dispatcher
 				$language = 'default';
 			}
 
-			foreach (["admin_sms-default-$store_id", "customer_sms-$language-$store_id"] as $scope)
+			foreach (["admin_sms-default-$shop_id", "customer_sms-$language-$shop_id"] as $scope)
 			{
 				if ($category === 'order' && $endpoint === 'status_change' && isset($variables['order_status_id']))
 				{

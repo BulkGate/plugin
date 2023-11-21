@@ -26,7 +26,7 @@ class HookTest extends TestCase
 
 		$connection->shouldReceive('run')->once()->with(Mockery::on(function (Request $request): bool
 		{
-			Assert::same('{"variables":{"test":"test"}}', $request->serialize());
+			Assert::same('{"language":"cs","shop_id":1,"variables":{"test":"test","shop_id":1,"lang_id":"cs"}}', $request->serialize());
 			Assert::same('https://portal.bulkgate.com/api/1.0/eshop/order/new', $request->url);
 
 			return true;
@@ -34,6 +34,8 @@ class HookTest extends TestCase
 
 		$variables = new Variables();
 		$variables['test'] = 'test';
+		$variables['shop_id'] = 1;
+		$variables['lang_id'] = 'cs';
 
 		$hook->dispatch('order', 'new', $variables->toArray());
 
@@ -47,7 +49,7 @@ class HookTest extends TestCase
 
 		$hook = new Hook($version, $connection = Mockery::mock(Connection::class), new Url(), $logger = Mockery::mock(Logger::class));
 		$connection->shouldReceive('run')->once()->andThrow(InvalidResponseException::class, 'error_test');
-		$logger->shouldReceive('log')->with('Hook Error: \'api/1.0/eshop/order/new\' - error_test, {"variables":{"test":"test"}}')->once();
+		$logger->shouldReceive('log')->with('Hook Error: \'api/1.0/eshop/order/new\' - error_test, {"language":null,"shop_id":null,"variables":{"test":"test"}}')->once();
 
 		$variables = new Variables();
 		$variables['test'] = 'test';

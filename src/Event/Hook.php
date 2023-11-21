@@ -40,7 +40,7 @@ class Hook
 		$category = str_replace('_', '-', $category);
 		$endpoint = str_replace('_', '-', $endpoint);
 
-		$this->send("api/$this->version/eshop/$category/$endpoint", ['variables' => $variables]);
+		$this->send("api/$this->version/eshop/$category/$endpoint", ['language' => $variables['lang_id'] ?? null, 'shop_id' => $variables['shop_id'] ?? null, 'variables' => $variables]);
 	}
 
 
