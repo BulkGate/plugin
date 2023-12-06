@@ -32,6 +32,10 @@ class SettingsTest extends TestCase
 		Assert::same(['one' => $one, 'two' => $two], $settings->load('main:'));
 
 		Assert::same(['one' => $one, 'two' => $two], $settings->load('main:', true));
+
+		$settings->setDefaultSettings(['main:three' => 'v3', 'xx|:' => 'b']);
+
+		Assert::same('v3', $settings->load('main:three'));
 	}
 
 

@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\Settings;
  */
 
 use BulkGate\Plugin\{Settings\Repository\Entity\Setting, Strict, Structure\Collection};
-use function array_key_exists, array_merge;
+use function array_key_exists, array_merge, preg_match;
 
 class Settings
 {
@@ -19,12 +19,32 @@ class Settings
 	 */
 	private array $settings = [];
 
+	/**
+	 * @var array<string, mixed>
+	 */
+	private array $default_settings = [];
+
 	private Repository\Settings $repository;
 
 	public function __construct(Repository\Settings $repository)
 	{
 		$this->repository = $repository;
 	}
+
+
+	/**
+	 * @param array<array-key, mixed> $settings
+	 */
+	public function setDefaultSettings(array $settings): void
+	{
+		$this->default_settings = [];
+
+		foreach ($settings as $key => $value) if (is_string($key) && preg_match('~^[\w_-]+?:?[\w_-]+?$~U', $key))
+		{
+			$this->default_settings[$key] = $value;
+		}
+	}
+
 
 
 	/**
@@ -45,7 +65,7 @@ class Settings
 			{
 				return ($this->settings[$scope][$key]->value);
 			}
-			return null;
+			return $this->default_settings[$settings_key] ?? null;
 		}
 		return $this->settings[$scope]->toArray();
 	}
