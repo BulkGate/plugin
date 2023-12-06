@@ -16,4 +16,7 @@ interface Language
 
 
 	public function get(?int $id = null): string;
+
+
+	public function hasMultiLanguageSupport(): bool;
 }
