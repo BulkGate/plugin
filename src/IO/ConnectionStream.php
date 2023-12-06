@@ -40,7 +40,6 @@ class ConnectionStream implements Connection
 			'header' => [
 				"Content-type: $request->content_type",
 				"Authorization: Bearer $this->jwt_token",
-                //"Cookie: XDEBUG_SESSION=10355" //debugging purpose only
 			],
 			'content' => $request->serialize(),
 			'ignore_errors' => true,
@@ -49,9 +48,9 @@ class ConnectionStream implements Connection
 
 		$connection = fopen($request->url, 'r', false, $context);
 
-		if ($connection)
+		try
 		{
-			try
+			if ($connection)
 			{
 				$response = (string) stream_get_contents($connection);
 
@@ -62,12 +61,11 @@ class ConnectionStream implements Connection
 					return new Response($response, Helpers::parseContentType(implode("\n", $meta['wrapper_data'])) ?? 'application/json');
 				}
 			}
-			finally
-			{
-				fclose($connection);
-			}
+			return new Response('{"error":"Server Unavailable. Try contact your hosting provider."}', 'application/json');
 		}
-
-		return new Response('{"error":"Server Unavailable. Try contact your hosting provider."}', 'application/json');
+		finally
+		{
+			fclose($connection);
+		}
 	}
 }

@@ -23,4 +23,16 @@ class Helpers
 		}
 		return null;
 	}
+
+
+	public static function getContentTypeWithoutCoding(string $content_type): string
+	{
+		if (preg_match('~^([^;]+)~', $content_type, $m))
+		{
+			[, $content_type] = $m;
+
+			return $content_type;
+		}
+		return 'application/json';
+	}
 }

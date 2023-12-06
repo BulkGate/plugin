@@ -48,6 +48,6 @@ class ConnectionFactory
 			return $jwt;
 		};
 
-		return new ConnectionStream($token_factory);
+		return extension_loaded('curl') ? new ConnectionCurl($token_factory) : new ConnectionStream($token_factory);
 	}
 }

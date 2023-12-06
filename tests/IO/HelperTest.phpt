@@ -63,6 +63,13 @@ class HelperTest extends TestCase
         EOT
 		));
 	}
+
+
+	public function testGetContentTypeWithoutCoding(): void
+	{
+		Assert::same('application/json', Helpers::getContentTypeWithoutCoding('application/json; charset=utf-8'));
+		Assert::same('application/json', Helpers::getContentTypeWithoutCoding(';;;;'));
+	}
 }
 
 (new HelperTest())->run();

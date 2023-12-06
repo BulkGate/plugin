@@ -2,13 +2,13 @@
 
 namespace BulkGate\Plugin\IO;
 
-use function json_encode;
-use const PHP_EOL;
-
 /**
  * @author Lukáš Piják 2023 TOPefekt s.r.o.
  * @link https://www.bulkgate.com/
  */
+
+use function json_encode;
+use const CURLINFO_CONTENT_TYPE, PHP_EOL;
 
 function stream_context_create(array $options): array
 {
@@ -48,4 +48,35 @@ function stream_get_meta_data(): array
 
 function fclose(): void
 {
+}
+
+
+function curl_exec($curl): ?string
+{
+	static $count = 0;
+
+	if ($count === 0)
+	{
+		$count++;
+		return '{"message":"BulkGate API"}';
+	}
+	return null;
+}
+
+
+function curl_getinfo($curl, int $type): ?string
+{
+	if ($type === CURLINFO_CONTENT_TYPE)
+	{
+		return 'application/json';
+	}
+	return null;
+}
+
+
+function curl_setopt_array($curl, $options)
+{
+	global $curl_options;
+
+	$curl_options = $options;
 }

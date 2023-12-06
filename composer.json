@@ -17,7 +17,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-zlib": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.9",

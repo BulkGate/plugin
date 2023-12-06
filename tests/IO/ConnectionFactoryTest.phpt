@@ -9,7 +9,7 @@ namespace BulkGate\Plugin\IO\Test;
 
 use Mockery;
 use Tester\{Assert, TestCase};
-use BulkGate\Plugin\{InvalidJwtException, IO\Connection, IO\ConnectionFactory, IO\Request, Settings\Settings};
+use BulkGate\Plugin\{InvalidJwtException, IO\Connection, IO\ConnectionCurl, IO\ConnectionFactory, IO\Request, Settings\Settings};
 use const NAN;
 
 require __DIR__ . '/../bootstrap.php';
@@ -29,6 +29,7 @@ class ConnectionFactoryTest extends TestCase
 		$connection = $factory->create();
 
 		Assert::type(Connection::class, $connection);
+		Assert::type(ConnectionCurl::class, $connection);
 
 		Assert::with($connection, function (): void
 		{
@@ -46,6 +47,7 @@ class ConnectionFactoryTest extends TestCase
 
 		Assert::exception(fn() => $factory->create()->run(new Request('url')), InvalidJwtException::class, 'Unable to create JWT');
 	}
+
 
 	public function tearDown(): void
 	{
