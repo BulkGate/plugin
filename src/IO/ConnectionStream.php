@@ -65,7 +65,7 @@ class ConnectionStream implements Connection
 		}
 		finally
 		{
-			fclose($connection);
+			$connection !== false && fclose($connection);
 		}
 	}
 }
