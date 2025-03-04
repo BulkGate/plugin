@@ -26,6 +26,9 @@ class Sign
 
 	private Logger $logger;
 
+	/**
+	 * @var array<string, mixed>
+	 */
 	private array $default_parameters = [];
 
 
