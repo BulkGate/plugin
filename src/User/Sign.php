@@ -61,9 +61,13 @@ class Sign
 			'application_product' => $this->configuration->product(),
 			'application_language' => $this->language->get(),
 			'application_version' => $this->configuration->version(),
-			'application_parameters' => array_merge([
-				'guest' => $token === null,
-			], $parameters, $this->default_parameters),
+			'application_parameters' => array_merge(
+				$this->default_parameters,
+				$parameters,
+				[
+					'guest' => $token === null,
+				],
+			),
 		], $token ?? '');
 	}
 
