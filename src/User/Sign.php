@@ -26,6 +26,8 @@ class Sign
 
 	private Logger $logger;
 
+	private array $default_parameters = [];
+
 
 	public function __construct(Settings $settings, Connection $connection, Url $url, Configuration $configuration, Language $language, Logger $logger)
 	{
@@ -35,6 +37,14 @@ class Sign
 		$this->configuration = $configuration;
 		$this->language = $language;
 		$this->logger = $logger;
+	}
+
+	/**
+	 * @param array<array-key, mixed> $parameters
+	 */
+	public function setDefaultParameters(array $parameters): void
+	{
+		$this->default_parameters = $parameters;
 	}
 
 
@@ -53,7 +63,7 @@ class Sign
 			'application_version' => $this->configuration->version(),
 			'application_parameters' => array_merge([
 				'guest' => $token === null,
-			], $parameters),
+			], $parameters, $this->default_parameters),
 		], $token ?? '');
 	}
 
