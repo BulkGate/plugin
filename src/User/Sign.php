@@ -8,7 +8,7 @@ namespace BulkGate\Plugin\User;
  */
 
 use BulkGate\{Plugin\AuthenticateException, Plugin\Debug\Logger, Plugin\Eshop\Configuration, Plugin\InvalidResponseException, Plugin\IO\Connection, Plugin\IO\Request, Plugin\IO\Url, Plugin\Localization\Language, Plugin\Settings\Settings, Plugin\Strict, Plugin\Utils\Jwt};
-use function array_merge;
+use function array_merge, time;
 
 class Sign
 {
@@ -83,7 +83,7 @@ class Sign
 			$this->settings->set('static:application_token', $response->data['data']['application_token'], ['type' => 'string']);
 			$this->settings->set('static:synchronize', 0, ['type' => 'int']);
 
-			return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
+			return ['token' => $this->authenticate(true, ['expire' => time() + 300]), 'data' => ['redirect' => $success_redirect]];
 		}
 		catch (InvalidResponseException|AuthenticateException $e)
 		{
@@ -101,6 +101,6 @@ class Sign
 	{
 		$this->settings->delete('static:application_token');
 
-		return ['token' => $this->authenticate(true), 'data' => ['redirect' => $success_redirect]];
+		return ['token' => $this->authenticate(true, ['expire' => time() + 300]), 'data' => ['redirect' => $success_redirect]];
 	}
 }
