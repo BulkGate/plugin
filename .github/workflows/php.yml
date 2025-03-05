@@ -6,7 +6,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: ghcr.io/bulkgate/plugin:latest
+
+    strategy:
+      matrix:
+        php-version: [7.4, 8.3]
+
+    container: ghcr.io/bulkgate/plugin:${{ matrix.php-version }}
 
     steps:
       - uses: actions/checkout@v1
