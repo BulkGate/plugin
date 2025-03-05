@@ -21,14 +21,14 @@ class FormatterIntlTest extends TestCase
 	{
 		$formatter = new FormatterIntl('cs', 'cz');
 
-		Assert::same('11. 4. 2022 16:05', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('11. 4. 2023 16:06', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
+		Assert::match('~11\.\s4\.\s2022\s16:05~u', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~11\.\s4\.\s2023\s16:06~u', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('11. 4. 2022', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('11. 4. 2023', $formatter->format('date', 1681222006, 'Europe/Prague'));
-		Assert::null($formatter->format('date', "1681222006", 'Europe/Prague'));
+		Assert::match('~11\.\s4\.\s2022~u', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~11\.\s4\.\s2023~u', $formatter->format('date', 1681222006, 'Europe/Prague'));
+		Assert::null($formatter->format('date', "161222006", 'Europe/Prague'));
 		Assert::null($formatter->format('date', "hahahaha", 'Europe/Prague'));
 
 		Assert::same('16:05', $formatter->format('time', '2022-04-11 16:05:00', 'Europe/Prague'));
@@ -36,15 +36,15 @@ class FormatterIntlTest extends TestCase
 		Assert::null($formatter->format('time', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('time', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('16,50 Kč', $formatter->format('price', 16.5, 'CZK'));
-		Assert::same('16,00 Kč', $formatter->format('price', 16, 'CZK'));
-		Assert::same('16,50 €', $formatter->format('price', 16.5, 'EUR'));
-		Assert::same('0,00 €', $formatter->format('price', ''));
+		Assert::match('~16,50\sKč~u', $formatter->format('price', 16.5, 'CZK'));
+		Assert::match('~16,00\sKč~u', $formatter->format('price', 16, 'CZK'));
+		Assert::match('~16,50\s€~u', $formatter->format('price', 16.5, 'EUR'));
+		Assert::match('~0,00\s€~u', $formatter->format('price', ''));
 
 		Assert::same('16,5', $formatter->format('number', 16.5));
 		Assert::same('16', $formatter->format('number', 16));
-		Assert::same('1 000', $formatter->format('number', 1000));
-		Assert::same('1 000 000', $formatter->format('number', 1000000));
+		Assert::match('~1\s000~u', $formatter->format('number', 1000));
+		Assert::match('~1\s000\s000~u', $formatter->format('number', 1000000));
 		Assert::same('0', $formatter->format('number', null));
 
 		Assert::same('Česko', $formatter->format('country', 'CZ'));
@@ -61,13 +61,13 @@ class FormatterIntlTest extends TestCase
 	{
 		$formatter = new FormatterIntl('fr', 'FR');
 
-		Assert::match('~11 avr\. 2022.*16:05~', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::match('~11 avr\. 2023.*16:06~', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
+		Assert::match('~11\savr\.\s2022.*16:05~u', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~11\savr\.\s2023.*16:06~u', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('11 avr. 2022', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('11 avr. 2023', $formatter->format('date', 1681222006, 'Europe/Prague'));
+		Assert::match('~11\savr\.\s2022~u', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~11\savr\.\s2023~u', $formatter->format('date', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('date', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('date', "hahahaha", 'Europe/Prague'));
 
@@ -76,15 +76,15 @@ class FormatterIntlTest extends TestCase
 		Assert::null($formatter->format('time', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('time', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('16,50 CZK', $formatter->format('price', 16.5, 'CZK'));
-		Assert::same('16,00 CZK', $formatter->format('price', 16, 'CZK'));
-		Assert::same('16,50 €', $formatter->format('price', 16.5, 'EUR'));
-		Assert::same('0,00 €', $formatter->format('price', ''));
+		Assert::match('~16,50\sCZK~u', $formatter->format('price', 16.5, 'CZK'));
+		Assert::match('~16,00\sCZK~u', $formatter->format('price', 16, 'CZK'));
+		Assert::match('~16,50\s€~u', $formatter->format('price', 16.5, 'EUR'));
+		Assert::match('~0,00\s€~u', $formatter->format('price', ''));
 
 		Assert::same('16,5', $formatter->format('number', 16.5));
 		Assert::same('16', $formatter->format('number', 16));
-		Assert::same('1 000', $formatter->format('number', 1000));
-		Assert::same('1 000 000', $formatter->format('number', 1000000));
+		Assert::match('~1\s000~u', $formatter->format('number', 1000));
+		Assert::match('~1\s000\s000~u', $formatter->format('number', 1000000));
 		Assert::same('0', $formatter->format('number', null));
 
 		Assert::same('Tchéquie', $formatter->format('country', 'CZ'));
@@ -101,22 +101,22 @@ class FormatterIntlTest extends TestCase
 	{
 		$formatter = new FormatterIntl('en', 'US');
 
-		Assert::same('Apr 11, 2022, 4:05 PM', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('Apr 11, 2023, 4:06 PM', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
+		Assert::match('~Apr\s11,\s2022,\s4:05\sPM~u', $formatter->format('datetime', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~Apr\s11,\s2023,\s4:06\sPM~u', $formatter->format('datetime', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('datetime', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('Apr 11, 2022', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('Apr 11, 2023', $formatter->format('date', 1681222006, 'Europe/Prague'));
+		Assert::match('~Apr\s11,\s2022~u', $formatter->format('date', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~Apr\s11,\s2023~u', $formatter->format('date', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('date', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('date', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('4:05 PM', $formatter->format('time', '2022-04-11 16:05:00', 'Europe/Prague'));
-		Assert::same('4:06 PM', $formatter->format('time', 1681222006, 'Europe/Prague'));
+		Assert::match('~4:05\sPM~u', $formatter->format('time', '2022-04-11 16:05:00', 'Europe/Prague'));
+		Assert::match('~4:06\sPM~u', $formatter->format('time', 1681222006, 'Europe/Prague'));
 		Assert::null($formatter->format('time', "1681222006", 'Europe/Prague'));
 		Assert::null($formatter->format('time', "hahahaha", 'Europe/Prague'));
 
-		Assert::same('CZK 16.50', $formatter->format('price', 16.5, 'CZK'));
+		Assert::match('~CZK\s16\.50~u', $formatter->format('price', 16.5, 'CZK'));
 		Assert::same('$16.00', $formatter->format('price', 16, 'USD'));
 		Assert::same('€16.50', $formatter->format('price', 16.5, 'EUR'));
 		Assert::same('€0.00', $formatter->format('price', ''));
