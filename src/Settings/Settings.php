@@ -117,6 +117,8 @@ class Settings
 
 	public function uninstall(): void
 	{
+		$this->delete('static:application_token');
+
 		if ($this->load('main:delete_db') ?? false)
 		{
 			$this->repository->dropTable();

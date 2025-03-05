@@ -107,6 +107,7 @@ class SettingsTest extends TestCase
 			'delete_db' => new Setting(['scope' => 'main', 'key' => 'delete_db', 'type' => 'bool', 'value' => '1']),
 		]));
 		$repository->shouldReceive('dropTable')->withNoArgs()->once();
+		$repository->shouldReceive('remove')->with('static', 'application_token')->once();
 
 
 		$settings->uninstall();
