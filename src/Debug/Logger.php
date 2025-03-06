@@ -35,6 +35,16 @@ class Logger
 		]);
 	}
 
+	public function getPlatformVersion(): string
+	{
+		return $this->platform_version;
+	}
+
+	public function getModuleVersion(): string
+	{
+		return $this->module_version;
+	}
+
 
 	/**
 	 * @return list<array{message: string, created: int, parameters: array<string, mixed>}>>
