@@ -13,9 +13,9 @@ class Logger
 {
 	use Strict;
 
-	private string $platform_version;
+	public /*readonly*/ string $platform_version;
 
-	private string $module_version;
+	public /*readonly*/ string $module_version;
 
 	private Repository\Logger $repository;
 
@@ -33,16 +33,6 @@ class Logger
 			'platform_version' => $this->platform_version,
 			'module_version' => $this->module_version,
 		]);
-	}
-
-	public function getPlatformVersion(): string
-	{
-		return $this->platform_version;
-	}
-
-	public function getModuleVersion(): string
-	{
-		return $this->module_version;
 	}
 
 

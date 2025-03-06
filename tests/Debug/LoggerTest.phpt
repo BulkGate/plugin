@@ -46,8 +46,8 @@ class LoggerTest extends TestCase
 	{
 		$logger = new Logger('6.3.0', '1.0.0', Mockery::mock(Repository::class));
 
-		Assert::same('6.3.0', $logger->getPlatformVersion());
-		Assert::same('1.0.0', $logger->getModuleVersion());
+		Assert::same('6.3.0', $logger->platform_version);
+		Assert::same('1.0.0', $logger->module_version);
 	}
 
 
