@@ -9,11 +9,14 @@ namespace BulkGate\Plugin\Debug\Repository;
 
 interface Logger
 {
-	public function log(string $message, int $created, string $level = 'error'): void;
+	/**
+	 * @param array<string, mixed> $parameters
+	 */
+	public function log(string $message, int $created, string $level = 'error', array $parameters = []): void;
 
 
 	/**
-	 * @return list<array{message: string, created: int}>
+	 * @return list<array{message: string, created: int, parameters: array<string, mixed>}>>
 	 */
 	public function getList(string $level = 'error'): array;
 }

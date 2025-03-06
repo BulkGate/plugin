@@ -28,7 +28,7 @@ class LoggerSettingsTest extends TestCase
 		$settings->shouldReceive('set')->with('static:log_level', [
 			['message' => 'test1', 'created' => 5],
 			['message' => 'test2', 'created' => 6],
-			['message' => 'test3', 'created' => 7]
+			['message' => 'test3', 'created' => 7, 'parameters' => []]
 		], ['type' => 'array'])->once();
 
 		$repository->log('test3', 7, 'level');
@@ -49,7 +49,7 @@ class LoggerSettingsTest extends TestCase
 		$settings->shouldReceive('set')->with('static:log_level', [
 			['message' => 'test2', 'created' => 6],
 			['message' => 'test3', 'created' => 7],
-			['message' => 'test4', 'created' => 8]
+			['message' => 'test4', 'created' => 8, 'parameters' => []]
 		], ['type' => 'array'])->once();
 
 		$repository->log('test4', 8, 'level');
@@ -64,7 +64,7 @@ class LoggerSettingsTest extends TestCase
 		$repository->setup(3);
 		$settings->shouldReceive('load')->with('static:log_level')->once()->andReturnNull();
 		$settings->shouldReceive('set')->with('static:log_level', [
-			['message' => 'test4', 'created' => 8]
+			['message' => 'test4', 'created' => 8, 'parameters' => []]
 		], ['type' => 'array'])->once();
 
 		$repository->log('test4', 8, 'level');
@@ -77,21 +77,21 @@ class LoggerSettingsTest extends TestCase
 	{
 		$repository = new LoggerSettings($settings = Mockery::mock(Settings::class));
 		$settings->shouldReceive('load')->with('static:log_level')->once()->andReturn([
-			['message' => 'test1', 'created' => 5],
-			['message' => 'test2', 'created' => 6],
-			['message' => 'test3', 'created' => 7],
+			['message' => 'test1', 'created' => 5, 'parameters' => ['test1' => 'test1']],
+			['message' => 'test2', 'created' => 6, 'parameters' => ['test2' => 'test2']],
+			['message' => 'test3', 'created' => 7, 'parameters' => ['test3' => 'test3']],
 			[],
 			['message' => []],
 			['created' => []]
 		]);
 
 		Assert::same([
-			['message' => 'test1', 'created' => 5],
-			['message' => 'test2', 'created' => 6],
-			['message' => 'test3', 'created' => 7],
-			['message' => '', 'created' => 0],
-			['message' => '', 'created' => 0],
-			['message' => '', 'created' => 0],
+			['message' => 'test1', 'created' => 5, 'parameters' => ['test1' => 'test1']],
+			['message' => 'test2', 'created' => 6, 'parameters' => ['test2' => 'test2']],
+			['message' => 'test3', 'created' => 7, 'parameters' => ['test3' => 'test3']],
+			['message' => '', 'created' => 0, 'parameters' => []],
+			['message' => '', 'created' => 0, 'parameters' => []],
+			['message' => '', 'created' => 0, 'parameters' => []],
 		], $repository->getList('level'));
 	}
 

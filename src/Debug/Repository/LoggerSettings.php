@@ -32,7 +32,7 @@ class LoggerSettings implements Logger
 	}
 
 
-	public function log(string $message, int $created, string $level = 'error'): void
+	public function log(string $message, int $created, string $level = 'error', array $parameters = []): void
 	{
 		$list = $this->settings->load(self::Key . $level);
 
@@ -44,6 +44,7 @@ class LoggerSettings implements Logger
 		$list[] = [
 			'message' => $message,
 			'created' => $created,
+			'parameters' => $parameters,
 		];
 
 		$this->settings->set(self::Key  . $level, count($list) > $this->limit ? array_slice($list, 1, $this->limit) : $list, ['type' => 'array']);
@@ -61,6 +62,7 @@ class LoggerSettings implements Logger
 			$output[] = [
 				'message' => isset($item['message']) && is_scalar($item['message']) ? (string) $item['message'] : '',
 				'created' => isset($item['created']) && is_scalar($item['created']) ? (int) $item['created'] : 0,
+				'parameters' => isset($item['parameters']) && is_array($item['parameters']) ? $item['parameters'] : [],
 			];
 		}
 
