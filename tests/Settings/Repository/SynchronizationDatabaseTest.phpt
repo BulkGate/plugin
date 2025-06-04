@@ -2,18 +2,15 @@
 
 namespace BulkGate\Plugin\Settings\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Database, IO, Settings\Repository\SynchronizationDatabase};
 
-require __DIR__ . '/../../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class SynchronizationDatabaseTest extends TestCase

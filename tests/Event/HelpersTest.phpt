@@ -2,16 +2,16 @@
 
 namespace BulkGate\Plugin\Event\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require_once __DIR__ . '/../bootstrap.php';
 
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\Event\Helpers;
 
-require_once __DIR__ . '/../bootstrap.php';
-
+/**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
+ * @testCase
+ */
 class HelpersTest extends TestCase
 {
 	public function testAddress(): void

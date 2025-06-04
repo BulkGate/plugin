@@ -16,7 +16,7 @@ function stream_context_create(array $options): array
 }
 
 
-function fopen(string $url, string $mode, bool $use_include_path = false, array $context = null): ?array
+function fopen(string $url, string $mode, bool $use_include_path = false, ?array $context = null): ?array
 {
 	if ($url === 'https://portal.bulkgate.com/')
 	{

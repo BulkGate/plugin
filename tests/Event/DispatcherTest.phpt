@@ -2,19 +2,16 @@
 
 namespace BulkGate\Plugin\Event\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Event\Dispatcher, Event\Hook, Event\Loader, Event\Variables, Settings\Settings};
 use function json_decode;
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class DispatcherTest extends TestCase
@@ -42,8 +39,6 @@ class DispatcherTest extends TestCase
 		});
 
 		Assert::true($test);
-
-		Mockery::close();
 	}
 
 
@@ -63,9 +58,7 @@ class DispatcherTest extends TestCase
 			return true;
 		}), ['category' => 'order', 'endpoint' => 'new', 'variables' => ['contact_synchronize' => 'all', 'contact_address_preference' => 'delivery']], ['type' => 'json'])->once();
 
-		$dispatcher->dispatch('order', 'new', $variables);
-
-		Mockery::close();
+		Assert::noError(fn () => $dispatcher->dispatch('order', 'new', $variables));
 	}
 
 
@@ -80,9 +73,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('main:dispatcher')->once()->andReturn('direct');
 		$hook->shouldReceive('dispatch')->with('order', 'new', ['contact_synchronize' => 'all', 'contact_address_preference' => 'delivery'])->once();
 
-		$dispatcher->dispatch('order', 'new', $variables);
-
-		Mockery::close();
+		Assert::noError(fn () => $dispatcher->dispatch('order', 'new', $variables));
 	}
 
 
@@ -99,9 +90,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('admin_sms-default-0:order_new')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
 		$hook->shouldReceive('dispatch')->with('order', 'new', ['contact_synchronize' => 'message', 'contact_address_preference' => 'invoice'])->once();
 
-		$dispatcher->dispatch('order', 'new', $variables, ['ok']);
-
-		Mockery::close();
+		Assert::noError(fn () => $dispatcher->dispatch('order', 'new', $variables, ['ok']));
 	}
 
 
@@ -121,9 +110,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('customer_sms-cs-0:order_status_change_delivered')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
 		$hook->shouldReceive('dispatch')->with('order', 'status_change', ['lang_id' => 'cs', 'order_status_id' => 'delivered', 'contact_synchronize' => 'off', 'contact_address_preference' => 'delivery'])->once();
 
-		$dispatcher->dispatch('order', 'status_change', $variables);
-
-		Mockery::close();
+		Assert::noError(fn () => $dispatcher->dispatch('order', 'status_change', $variables));
 	}
 
 
@@ -143,9 +130,7 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('customer_sms-default-0:return_status_change_pending')->once()->andReturn(json_decode('{"sms":{"active": true}}', true));
 		$hook->shouldReceive('dispatch')->with('return', 'status_change', ['lang_id' => 'cs', 'return_status_id' => 'pending', 'contact_synchronize' => 'message', 'contact_address_preference' => 'delivery'])->once();
 
-		$dispatcher->dispatch('return', 'status_change', $variables);
-
-		Mockery::close();
+		Assert::noError(fn () => $dispatcher->dispatch('return', 'status_change', $variables));
 	}
 
 
@@ -162,8 +147,12 @@ class DispatcherTest extends TestCase
 		$settings->shouldReceive('load')->with('admin_sms-default-0:return_new')->once()->andReturnNull();
 		$settings->shouldReceive('load')->with('customer_sms-default-0:return_new')->once()->andReturnNull();
 
-		$dispatcher->dispatch('return', 'new', $variables);
+		Assert::noError(fn () => $dispatcher->dispatch('return', 'new', $variables));
+	}
 
+
+	public function tearDown(): void
+	{
 		Mockery::close();
 	}
 }

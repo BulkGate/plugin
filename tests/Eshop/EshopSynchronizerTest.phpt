@@ -2,18 +2,15 @@
 
 namespace BulkGate\Plugin\Eshop\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Eshop\Language, Eshop\MultiStore, Eshop\OrderStatus, Eshop\ReturnStatus, Settings\Settings, Eshop\EshopSynchronizer, Settings\Synchronizer};
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class EshopSynchronizerTest extends TestCase

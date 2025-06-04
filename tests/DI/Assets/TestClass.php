@@ -62,3 +62,14 @@ class TestService
 		$this->service = $service;
 	}
 }
+
+
+class TestExternalService
+{
+	public DateTime $service;
+
+	public function __construct(DateTime $service)
+	{
+		$this->service = $service;
+	}
+}

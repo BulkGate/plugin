@@ -2,19 +2,16 @@
 
 namespace BulkGate\Plugin\IO\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/.mock.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{InvalidResponseException, IO\ConnectionStream, IO\Request};
 
-require __DIR__ . '/../bootstrap.php';
-require __DIR__ . '/.mock.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class ConnectionStreamTest extends TestCase

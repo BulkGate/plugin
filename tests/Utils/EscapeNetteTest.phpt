@@ -2,17 +2,14 @@
 
 namespace BulkGate\Plugin\Utils\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\Utils\EscapeNette;
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class EscapeNetteTest extends TestCase

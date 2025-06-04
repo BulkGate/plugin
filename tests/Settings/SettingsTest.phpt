@@ -2,18 +2,15 @@
 
 namespace BulkGate\Plugin\Settings\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Structure\Collection, Settings\Repository\Entity\Setting, Settings\Repository\Settings as Repository, Settings\Settings};
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class SettingsTest extends TestCase
@@ -55,9 +52,7 @@ class SettingsTest extends TestCase
 			return true;
 		}))->once();
 
-		$settings->set('static:LGC', 451, ['synchronize_flag' => 'change']);
-
-		Assert::true(true);
+		Assert::noError(fn () => $settings->set('static:LGC', 451, ['synchronize_flag' => 'change']));
 	}
 
 
@@ -66,7 +61,7 @@ class SettingsTest extends TestCase
 		$settings = new Settings($repository = Mockery::mock(Repository::class));
 		$repository->shouldReceive('remove')->with('static', 'test')->once();
 
-		$settings->delete('static:test');
+		Assert::noError(fn () => $settings->delete('static:test'));
 	}
 
 
@@ -75,7 +70,7 @@ class SettingsTest extends TestCase
 		$settings = new Settings($repository = Mockery::mock(Repository::class));
 		$repository->shouldReceive('cleanup')->withNoArgs()->once();
 
-		$settings->cleanup();
+		Assert::noError(fn () => $settings->cleanup());
 	}
 
 
@@ -96,7 +91,7 @@ class SettingsTest extends TestCase
 			return true;
 		}))->once();
 
-		$settings->install();
+		Assert::noError(fn () => $settings->install());
 	}
 
 
@@ -108,8 +103,7 @@ class SettingsTest extends TestCase
 		]));
 		$repository->shouldReceive('dropTable')->withNoArgs()->once();
 
-
-		$settings->uninstall();
+		Assert::noError(fn () => $settings->uninstall());
 	}
 
 

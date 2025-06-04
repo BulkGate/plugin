@@ -2,23 +2,15 @@
 
 namespace BulkGate\Plugin\Event\Repository\Test;
 
+require __DIR__ . '/../../bootstrap.php';
+
+use Mockery;
+use Tester\{Assert, TestCase};
+use BulkGate\Plugin\{Database\Connection, Database\ResultCollection, Event\Repository\AsynchronousDatabase, Structure\Collection};
+
 /**
  * @author Lukáš Piják 2023 TOPefekt s.r.o.
  * @link https://www.bulkgate.com/
- */
-
-use BulkGate\Plugin\Database\Connection;
-use BulkGate\Plugin\Database\ResultCollection;
-use BulkGate\Plugin\Event\Repository\AsynchronousDatabase;
-use BulkGate\Plugin\Structure\Collection;
-use Mockery;
-use Tester\Assert;
-use Tester\TestCase;
-use function str_replace;
-
-require __DIR__ . '/../../bootstrap.php';
-
-/**
  * @testCase
  */
 class AsynchronousDatabaseTest extends TestCase
@@ -49,8 +41,6 @@ class AsynchronousDatabaseTest extends TestCase
 		Assert::count(2, $collection);
 
 		$asynchronousDatabase->finish('test_key');
-
-		Mockery::close();
 	}
 
 
@@ -69,7 +59,11 @@ class AsynchronousDatabaseTest extends TestCase
 
 		Assert::type(Collection::class, $collection);
 		Assert::count(0, $collection);
+	}
 
+
+	public function tearDown(): void
+	{
 		Mockery::close();
 	}
 }

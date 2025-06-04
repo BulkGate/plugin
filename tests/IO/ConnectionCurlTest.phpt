@@ -2,20 +2,17 @@
 
 namespace BulkGate\Plugin\IO\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/.mock.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{InvalidResponseException, IO\ConnectionCurl, IO\Request};
 use const CURL_HTTP_VERSION_1_1, CURLOPT_CUSTOMREQUEST, CURLOPT_HTTP_VERSION, CURLOPT_HTTPHEADER, CURLOPT_MAXREDIRS, CURLOPT_POSTFIELDS, CURLOPT_RETURNTRANSFER, CURLOPT_SSL_VERIFYPEER, CURLOPT_TIMEOUT, CURLOPT_URL;
 
-require __DIR__ . '/../bootstrap.php';
-require __DIR__ . '/.mock.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class ConnectionCurlTest extends TestCase

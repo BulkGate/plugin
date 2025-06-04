@@ -43,7 +43,7 @@ class ResultCollection implements ArrayAccess, Countable, IteratorAggregate
 
 
 	/**
-	 * @param array<array-key, array<array-key, mixed>> $list
+	 * @param array<array-key, array<array-key, mixed>|mixed> $list
 	 */
 	public function __construct(array $list = [])
 	{

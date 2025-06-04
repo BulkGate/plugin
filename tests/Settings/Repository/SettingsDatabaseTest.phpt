@@ -2,18 +2,15 @@
 
 namespace BulkGate\Plugin\Settings\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, Expect, TestCase};
 use BulkGate\Plugin\{Database\Connection, Database\ResultCollection, Settings\Repository\Entity\Setting, Settings\Repository\SettingsDatabase};
 
-require __DIR__ . '/../../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class SettingsDatabaseTest extends TestCase

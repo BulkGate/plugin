@@ -2,17 +2,14 @@
 
 namespace BulkGate\Plugin\Database\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Structure\Collection, Settings\Repository\Entity\Setting};
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class CollectionTest extends TestCase

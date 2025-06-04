@@ -15,7 +15,7 @@ class Settings
 	use Strict;
 
 	/**
-	 * @var array<string, Collection<string, Repository\Entity\Setting>>
+	 * @var array<string, Collection<string, Repository\Entity\Setting>|mixed>
 	 */
 	private array $settings = [];
 

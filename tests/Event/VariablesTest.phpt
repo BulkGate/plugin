@@ -2,17 +2,14 @@
 
 namespace BulkGate\Plugin\Event\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\Event\Variables;
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class VariablesTest extends TestCase
@@ -83,6 +80,8 @@ class VariablesTest extends TestCase
 
 	public function testDeprecated(): void
 	{
+		Assert::type(Variables::class, new Variables());
+
 		$v1 = new \BulkGate\Extensions\Hook\Variables([]);
 
 		$v1->set('test1', 'ok');

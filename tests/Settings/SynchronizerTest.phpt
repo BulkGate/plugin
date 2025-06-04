@@ -2,19 +2,16 @@
 
 namespace BulkGate\Plugin\Settings\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{AuthenticateException, Debug\Logger, Eshop\Configuration, InvalidResponseException, IO\Url, Settings\Repository\Synchronization, Settings\Synchronizer, Structure\Collection, Settings\Repository\Entity\Setting, Settings\Settings};
 use function time;
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class SynchronizerTest extends TestCase

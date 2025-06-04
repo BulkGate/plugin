@@ -28,6 +28,9 @@ class Requirements
 	 */
 	public function run(array $output = []): array
 	{
+		/**
+		 * @phpstan-ignore greaterOrEqual.alwaysTrue
+		 */
 		$output[] = $this->same(true, PHP_VERSION_ID >= 70400, 'PHP >= 7.4 Version');
 		$output[] = $this->same(true, extension_loaded('intl'), 'INTL Extension', true);
 		$output[] = $this->same(true, extension_loaded('curl'), 'cURL Extension', true);

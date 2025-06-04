@@ -2,20 +2,15 @@
 
 namespace BulkGate\Plugin\Localization\Test;
 
+require __DIR__ . '/../bootstrap.php';
+
+use Mockery;
+use Tester\{Assert, TestCase};
+use BulkGate\Plugin\{Localization\LanguageSettings, Settings\Settings};
+
 /**
  * @author Lukáš Piják 2023 TOPefekt s.r.o.
  * @link https://www.bulkgate.com/
- */
-
-use BulkGate\Plugin\Localization\Language;
-use BulkGate\Plugin\Localization\LanguageSettings;
-use BulkGate\Plugin\Settings\Settings;
-use Mockery;
-use Tester\{Assert, TestCase};
-
-require __DIR__ . '/../bootstrap.php';
-
-/**
  * @testCase
  */
 class LanguageSettingsTest extends TestCase

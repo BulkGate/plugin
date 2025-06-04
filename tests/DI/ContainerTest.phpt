@@ -2,19 +2,17 @@
 
 namespace BulkGate\Plugin\DI\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
-
-use Tester\{Assert, TestCase};
-use Connection, TestClassEntity, ConnectionTest;
-use BulkGate\Plugin\DI\{AutoWiringException, Container, InvalidStateException, MissingParameterException, MissingServiceException};
-
 require __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/Assets/TestClass.php';
 
+use DateTime;
+use Tester\{Assert, TestCase};
+use Connection, TestClassEntity, ConnectionTest, TestExternalService;
+use BulkGate\Plugin\DI\{AutoWiringException, Container, InvalidStateException, MissingParameterException, MissingServiceException};
+
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class ContainerTest extends TestCase
@@ -96,6 +94,9 @@ class ContainerTest extends TestCase
 		$container['entity'] = TestClassEntity::class;
 
 		Assert::exception(fn() => $container->getByClass(TestClassEntity::class), MissingParameterException::class, 'Missing \'string\' parameter \'TestClassEntity::$name\'');
+
+		$container['external'] = ['factory' => \TestExternalService::class];
+		Assert::exception(fn () => $container->getByClass(\TestExternalService::class), MissingServiceException::class, "Service 'DateTime' not found");
 	}
 
 
@@ -134,8 +135,11 @@ class ContainerTest extends TestCase
 	{
 		$container = new Container('rewrite');
 		$container['production'] = ['factory' => \ConnectionTest::class, 'factory_method' => fn () => new \ConnectionProduction()];
+		$container['external'] = ['factory' => \TestExternalService::class, 'factory_method' => fn () => new TestExternalService(new DateTime())];
 
 		Assert::exception(fn () => $container->getByClass(\Connection::class), MissingParameterException::class, 'Factory method must return instance of \'ConnectionTest\'');
+
+		Assert::type(TestExternalService::class, $container->getByClass(\TestExternalService::class));
 	}
 
 

@@ -9,6 +9,9 @@ namespace BulkGate\Plugin\DI;
 
 use function is_callable;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait FactoryStatic
 {
 	private static Container $container;

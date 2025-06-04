@@ -2,18 +2,15 @@
 
 namespace BulkGate\Plugin\Event\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
 use BulkGate\Plugin\{Event\Asynchronous, Event\Hook, Event\Repository\Asynchronous as AsynchronousRepository, Event\Repository\Entity\Task, Structure\Collection};
 
-require __DIR__ . '/../bootstrap.php';
-
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class AsynchronousTest extends TestCase
@@ -37,7 +34,11 @@ class AsynchronousTest extends TestCase
 		$asynchronous = new Asynchronous($repository, $hook);
 
 		Assert::same(2, $asynchronous->run(3));
+	}
 
+
+	public function tearDown(): void
+	{
 		Mockery::close();
 	}
 }

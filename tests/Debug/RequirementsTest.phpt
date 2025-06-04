@@ -2,17 +2,14 @@
 
 namespace BulkGate\Plugin\Debug\Test;
 
+require __DIR__ . '/../bootstrap.php';
+
+use Tester\{Assert, TestCase};
+use BulkGate\Plugin\Debug\Requirements;
+
 /**
  * @author Lukáš Piják 2023 TOPefekt s.r.o.
  * @link https://www.bulkgate.com/
- */
-
-use BulkGate\Plugin\Debug\Requirements;
-use Tester\{Assert, TestCase};
-
-require __DIR__ . '/../bootstrap.php';
-
-/**
  * @testCase
  */
 class RequirementsTest extends TestCase
