@@ -20,7 +20,7 @@ class SettingsTest extends TestCase
 		$settings = new Settings($repository = Mockery::mock(Repository::class));
 		$repository->shouldReceive('load')->with('main')->twice()->andReturn(new Collection(Setting::class, [
 			'one' => $one = new Setting(['scope' => 'main', 'key' => 'one', 'type' => 'string', 'value' => 'v1']),
-			'two' => $two = new Setting(['scope' => 'main', 'key' => 'one', 'type' => 'array', 'value' => '{"value":"v2"}']),
+			'two' => $two = new Setting(['scope' => 'main', 'key' => 'two', 'type' => 'array', 'value' => '{"value":"v2"}']),
 		]));
 
 		Assert::same('v1', $settings->load('main:one'));
@@ -41,18 +41,39 @@ class SettingsTest extends TestCase
 		$settings = new Settings($repository = Mockery::mock(Repository::class));
 		$repository->shouldReceive('save')->with(Mockery::on(function (Setting $setting): bool
 		{
-			Assert::same('static', $setting->scope);
-			Assert::same('LGC', $setting->key);
+			Assert::same('main', $setting->scope);
+			Assert::type('string', $setting->key);
 			Assert::same('int', $setting->type);
-			Assert::same(451, $setting->value);
+			Assert::type('int', $setting->value);
 			Assert::type('int', $setting->datetime);
 			Assert::same(0, $setting->order);
-			Assert::same('change', $setting->synchronize_flag);
+			Assert::type('string', $setting->synchronize_flag);
 
 			return true;
-		}))->once();
+		}))->times(3);
+		$repository->shouldReceive('load')->with('main')->once()->andReturn(new Collection(Setting::class, [
+			'one' => new Setting(['scope' => 'main', 'key' => 'one', 'type' => 'int', 'value' => 451]),
+			'two' => new Setting(['scope' => 'main', 'key' => 'two', 'type' => 'array', 'value' => '{"value":"v2"}']),
+		]));
 
-		Assert::noError(fn () => $settings->set('static:LGC', 451, ['synchronize_flag' => 'change']));
+		Assert::noError(fn () => $settings->set('main:one', 451, ['synchronize_flag' => 'change']));
+
+		Assert::same(451, $settings->load('main:one'));
+		Assert::same(['value' => 'v2'], $settings->load('main:two'));
+
+		Assert::noError(fn () => $settings->set('main:one', 452));
+
+		Assert::same(452, $settings->load('main:one'));
+
+		Assert::noError(fn () => $settings->set('main:three', 453));
+
+		Assert::same(453, $settings->load('main:three'));
+
+		$repository->shouldReceive('remove')->with('main', 'three')->once();
+
+		$settings->delete('main:three');
+
+		Assert::null($settings->load('main:three'));
 	}
 
 
@@ -90,6 +111,9 @@ class SettingsTest extends TestCase
 
 			return true;
 		}))->once();
+		$repository->shouldReceive('load')->with('static')->once()->andReturn(new Collection(Setting::class, [
+			'synchronize' => new Setting(['scope' => 'static', 'key' => 'synchronize', 'type' => 'int', 'value' => 451]),
+		]));
 
 		Assert::noError(fn () => $settings->install());
 	}

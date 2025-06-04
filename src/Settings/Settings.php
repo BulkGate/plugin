@@ -75,15 +75,45 @@ class Settings
 	 * @param mixed $value
 	 * @param array<string, mixed> $parameters
 	 */
-	public function set(string $settings_key, $value, array $parameters): void
+	public function set(string $settings_key, $value, array $parameters = []): void
 	{
 		[$scope, $key] = Helpers::key($settings_key);
 
-		$this->repository->save(new Repository\Entity\Setting(array_merge($parameters, [
+		$time = time();
+
+		$this->repository->save(new Repository\Entity\Setting(array_merge(['datetime' => $time], $parameters, [
 			'scope' => $scope,
 			'key' => $key,
-			'value' => $value
+			'value' => $value,
 		])));
+
+		if ($key !== null)
+		{
+			if (!array_key_exists($scope, $this->settings))
+			{
+				$this->settings[$scope] = $this->repository->load($scope);
+			}
+			else
+			{
+				if (
+					isset($this->settings[$scope][$key]) &&
+					$this->settings[$scope][$key] instanceof Setting
+				)
+				{
+					$this->settings[$scope][$key]->value = $value;
+					$this->settings[$scope][$key]->datetime = $time;
+				}
+				else
+				{
+					$this->settings[$scope][$key] = new Setting(array_merge($parameters, [
+						'scope' => $scope,
+						'key' => $key,
+						'value' => $value,
+						'datetime' => $time,
+					]));
+				}
+			}
+		}
 	}
 
 
@@ -94,6 +124,11 @@ class Settings
 		if ($key !== null)
 		{
 			$this->repository->remove($scope, $key);
+
+			if (array_key_exists($scope, $this->settings) && isset($this->settings[$scope][$key]))
+			{
+				unset($this->settings[$scope][$key]);
+			}
 		}
 	}
 
