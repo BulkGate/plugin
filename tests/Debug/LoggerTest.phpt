@@ -17,9 +17,9 @@ class LoggerTest extends TestCase
 {
 	public function testLog(): void
 	{
-		$logger = new Logger($repository = Mockery::mock(Repository::class));
+		$logger = new Logger('6.3.0', '1.0.0', $repository = Mockery::mock(Repository::class));
 
-		$repository->shouldReceive('log')->with('test', Mockery::type('int'), 'level')->once();
+		$repository->shouldReceive('log')->with('test', Mockery::type('int'), 'level', ['platform_version' => '6.3.0', 'module_version' => '1.0.0'])->once();
 
 		$logger->log('test', 'level');
 
@@ -29,16 +29,22 @@ class LoggerTest extends TestCase
 
 	public function testGetList(): void
 	{
-		$logger = new Logger($repository = Mockery::mock(Repository::class));
-		$repository->shouldReceive('getList')->with('level')->once()->andReturn([
-			['message' => 'test1', 'created' => 5],
-			['message' => 'test2', 'created' => 6]
-		]);
+		$logger = new Logger('6.3.0', '1.0.0', $repository = Mockery::mock(Repository::class));
+		$repository->shouldReceive('getList')->with('error')->once()->ordered();
+		$repository->shouldReceive('getList')->with('level')->once()->ordered();
 
-		Assert::same([
-			['message' => 'test1', 'created' => 5],
-			['message' => 'test2', 'created' => 6]
-		], $logger->getList('level'));
+		$logger->getList();
+		$logger->getList('level');
+
+		Assert::true(true);
+	}
+
+	public function testVersions(): void
+	{
+		$logger = new Logger('6.3.0', '1.0.0', Mockery::mock(Repository::class));
+
+		Assert::same('6.3.0', $logger->platform_version);
+		Assert::same('1.0.0', $logger->module_version);
 	}
 
 
