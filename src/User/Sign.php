@@ -67,9 +67,7 @@ class Sign
 			'application_parameters' => array_merge(
 				$this->default_parameters,
 				$parameters,
-				[
-					'guest' => $token === null,
-				],
+				['guest' => $token === null],
 			),
 		], $token ?? '');
 	}

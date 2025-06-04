@@ -2,25 +2,15 @@
 
 namespace BulkGate\Plugin\User\Test;
 
-/**
- * @author Lukáš Piják 2023 TOPefekt s.r.o.
- * @link https://www.bulkgate.com/
- */
+require_once __DIR__ . '/../bootstrap.php';
 
 use Mockery;
 use Tester\{Assert, TestCase};
-use BulkGate\Plugin\{Debug\Logger,
-	Eshop\ConfigurationDefault,
-	IO\Connection,
-	IO\Url,
-	Localization\Language,
-	Settings\Settings,
-	User\Sign,
-	Utils\Jwt};
-
-require_once __DIR__ . '/../bootstrap.php';
+use BulkGate\Plugin\{IO\Url, User\Sign, Utils\Jwt, Debug\Logger, IO\Connection, Settings\Settings, Localization\Language, Eshop\ConfigurationDefault};
 
 /**
+ * @author Lukáš Piják 2023 TOPefekt s.r.o.
+ * @link https://www.bulkgate.com/
  * @testCase
  */
 class SignTest extends TestCase

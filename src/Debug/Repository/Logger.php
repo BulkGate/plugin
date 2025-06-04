@@ -16,7 +16,7 @@ interface Logger
 
 
 	/**
-	 * @return list<array{message: string, created: int, parameters: array<string, mixed>}>>
+	 * @return list<array{message: string, created: int, parameters: array<string, mixed>}>
 	 */
 	public function getList(string $level = 'error'): array;
 }
