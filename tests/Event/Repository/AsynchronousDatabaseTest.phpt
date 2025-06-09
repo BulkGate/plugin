@@ -21,7 +21,6 @@ class AsynchronousDatabaseTest extends TestCase
 
 		$db->shouldReceive('table')->with('bulkgate_module')->times(3)->andReturn('bulkgate_module');
 		$db->shouldReceive('execute')->with('START TRANSACTION')->once()->ordered();
-		$db->shouldReceive('escape')->with('2')->once()->ordered()->andReturn(2);
 		$db->shouldReceive('execute')->with("SELECT * FROM `bulkgate_module` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT 2 FOR UPDATE")->once()->ordered()->andReturn(new ResultCollection([
 			['key' => 'task1', 'value' => '{"category": "test", "endpoint": "endpoint1", "variables": {"key": "value"}}', 'datetime' => '456', 'order' => '0'],
 			['key' => 'task2', 'value' => '{"category": "test", "endpoint": "endpoint2", "variables": {"key2": "value2"}}', 'datetime' => 456, 'order' => 0],
@@ -50,7 +49,6 @@ class AsynchronousDatabaseTest extends TestCase
 
 		$db->shouldReceive('table')->once()->andReturn('bulkgate_module');
 		$db->shouldReceive('execute')->with('START TRANSACTION')->once()->ordered();
-		$db->shouldReceive('escape')->with('2')->once()->ordered()->andReturn(2);
 		$db->shouldReceive('execute')->with("SELECT * FROM `bulkgate_module` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT 2 FOR UPDATE")->once()->ordered()->andReturnNull();
 		$db->shouldReceive('execute')->with('ROLLBACK')->once()->ordered();
 
