@@ -13,6 +13,7 @@ use ReflectionClass, ReflectionException;
 use function array_key_exists, class_exists, interface_exists, is_array, is_string, is_subclass_of, uniqid, count;
 
 /**
+ * @phpstan-type ServiceDefinition class-string|array{factory?:class-string, factory_method?:callable, parameters?:array<string, mixed>, wiring?: class-string<object>, auto_wiring?: bool}
  * @implements ArrayAccess<string, object|class-string<object>|array{name: string, factory?: class-string<object>, auto_wiring?: bool, parameters?: array<string, mixed>, factory_method?: callable(mixed ...$parameters):object|null, instantiable: bool, factory_method?: callable(mixed ...$parameters):object|null}>
  */
 abstract class ContainerBase implements ArrayAccess, Countable
@@ -57,7 +58,7 @@ abstract class ContainerBase implements ArrayAccess, Countable
 		foreach ($config as $name => $service) if (is_string($service) || is_array($service))
 		{
 			/**
-			 * @var class-string<object>|array{factory?: class-string<object>, parameters?: array<string, mixed>, wiring?: class-string<object>, auto_wiring?: bool, factory_method?: callable(mixed ...$parameters):object|null} $service
+			 * @var ServiceDefinition $service
 			 */
 			$this[is_string($name) ? $name : uniqid('class-')] = $service;
 		}
@@ -285,8 +286,8 @@ abstract class ContainerBase implements ArrayAccess, Countable
 
 
 	/**
-	 * @param array-key $offset
-	 * @param class-string<object>|array{factory?: class-string<object>, parameters?: array<string, mixed>, wiring?: class-string<object>, auto_wiring?: bool, factory_method?: callable(mixed ...$parameters):object|null} $value
+	 * @param array-key $offset The service id
+	 * @param ServiceDefinition $value The service definition.
 	 * @throws AutoWiringException|InvalidStateException
 	 */
 	public function offsetSet($offset, $value): void

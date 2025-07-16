@@ -28,8 +28,13 @@ class AsynchronousDatabase implements Asynchronous
 
 		$this->db->execute('START TRANSACTION');
 
+		/**
+		 * @var literal-string $limit
+		 */
+		$limit = strval($limit);
+
 		$records = $this->db->execute(
-			$this->db->prepare("SELECT * FROM `{$this->db->table('bulkgate_module')}` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT %s FOR UPDATE", $limit)
+			"SELECT * FROM `{$this->db->table('bulkgate_module')}` WHERE `scope` = 'asynchronous' AND `order` = 0 LIMIT $limit FOR UPDATE"
 		);
 
 		if ($records !== null)
