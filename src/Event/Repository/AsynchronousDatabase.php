@@ -50,6 +50,9 @@ class AsynchronousDatabase implements Asynchronous
 
 			if ($keys !== [])
 			{
+				/**
+				 * @var literal-string $keys_sql
+				 */
 				$keys_sql = implode("','", $keys);
 
 				$this->db->execute("UPDATE `{$this->db->table('bulkgate_module')}` SET `order` = -1 WHERE `scope` = 'asynchronous' AND `key` IN ('$keys_sql')");
