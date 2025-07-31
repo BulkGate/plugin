@@ -43,7 +43,7 @@ class AsynchronousDatabase implements Asynchronous
 
 			foreach ($records as $record)
 			{
-				$keys[] = $this->db->escape($record['key']);
+				$keys[] = trim($this->db->escape($record['key']), '\'');
 
 				$collection[] = new Entity\Task($record->toArray());
 			}
